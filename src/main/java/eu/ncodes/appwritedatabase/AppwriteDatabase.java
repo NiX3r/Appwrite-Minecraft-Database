@@ -44,7 +44,7 @@ public final class AppwriteDatabase extends JavaPlugin {
         // Checks if collection data exists
         GetCollectionListService.GetListCollection((id) -> {
             if(id.equals("none")) {
-                System.out.println("Collection does not exist. Creating one!");
+                System.out.println("Collection does not exist. Creating one ...");
                 CreateCollectionService.CreateCollection((newId) -> {
                     System.out.println("Collection created!");
                     PluginVariables.DataCollectionID = newId;
