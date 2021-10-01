@@ -1,0 +1,8 @@
+name: AppwriteDatabase
+version: '${project.version}'
+main: eu.ncodes.appwritedatabase.AppwriteDatabase
+api-version: 1.13
+prefix: AppwriteAPI
+authors: [ nCodes, Meldiron ]
+description: Utility Minecraft plugin that creates persistent data storage while using Appwrite
+website: https://ncodes.eu
