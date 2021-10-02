@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public class PluginUtils {
 
-    public static void SendMessage(CommandSender target, boolean usePrefix, String messageKey, LinkedHashMap<String, String> values) {
+    public static String GetMessage(boolean usePrefix, String messageKey, LinkedHashMap<String, String> values) {
 
         String message = "";
 
@@ -27,10 +27,17 @@ public class PluginUtils {
         message += PluginVariables.lang.get(messageKey);
 
         for(String key : values.keySet()) {
-            message = message.replace("{{" + key + "}}", values.get(key));
+            if(values.get(key) != null) {
+                message = message.replace("{{" + key + "}}", values.get(key));
+            }
         }
 
-        target.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+
+    public static void SendMessage(CommandSender target, boolean usePrefix, String messageKey, LinkedHashMap<String, String> values) {
+        target.sendMessage(GetMessage(usePrefix, messageKey, values));
     }
 
     public static void SendMessage(CommandSender target, String messageKey, LinkedHashMap<String, String> values) {
@@ -39,6 +46,14 @@ public class PluginUtils {
 
     public static void SendMessage(CommandSender target, String messageKey) {
         SendMessage(target, true, messageKey, new LinkedHashMap<>());
+    }
+
+    public static String GetMessage(String messageKey, LinkedHashMap<String, String> values) {
+        return GetMessage(true, messageKey, values);
+    }
+
+    public static String GetMessage(String messageKey) {
+        return GetMessage(true, messageKey, new LinkedHashMap<>());
     }
 
 

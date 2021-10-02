@@ -1,5 +1,7 @@
 package eu.ncodes.appwritedatabase.Utils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -11,38 +13,30 @@ import java.util.*;
 
 public class CommandUtils {
 
-    public static LinkedHashMap<String, String> getDefaultsHashMap(int startIndex){
+    public static JsonObject getDefaultsHashMap(int startIndex) {
+        JsonObject output = new JsonObject();
 
-        LinkedHashMap<String, String> output = new LinkedHashMap<String, String>();
         int outputIndex = 0, arrayIndex = 0;
-        Set<String> keysSet = PluginVariables.defaults.get().getKeys(true);
+        Set<String> keysSet = PluginVariables.defaults.get().getConfigurationSection("defaults").getKeys(false);
         String[] keys = new String[keysSet.size()];
         keysSet.toArray(keys);
 
         Arrays.sort(keys);
 
-        for(String key : keys){
-
-            if(!key.equals("defaults")){
-
-                if(arrayIndex >= startIndex){
-
-                    output.put(key.replace("defaults.", ""), PluginVariables.defaults.getConfig().getString(key));
+        for(String key : keys) {
+                if(arrayIndex >= startIndex) {
+                    output.addProperty(key, PluginVariables.defaults.getConfig().getString(key));
                     outputIndex++;
-
                 }
 
-                if(outputIndex == 9)
+                if(outputIndex == 9) {
                     break;
+                }
 
                 arrayIndex++;
-
-            }
-
         }
 
         return output;
-
     }
 
     public static int getDefaultsSize(){
@@ -50,14 +44,12 @@ public class CommandUtils {
     }
 
     public static void sendFooter(CommandSender target, String command, int currentPage, int maxPage){
-
         // Footer visualtiazion
         String previous = "←--";
         String current = "&a" + currentPage + "/" + maxPage;
         String next = "--→";
 
         final ComponentBuilder message = new ComponentBuilder("");
-        System.out.println(currentPage + " == " + maxPage);
 
         command = "/" + command;
 
@@ -90,8 +82,6 @@ public class CommandUtils {
                     TextComponent.fromLegacyText("§7Click to show next page")));
         }
 
-        ((Player)target).spigot().sendMessage(message.create());
-
+        target.spigot().sendMessage(message.create());
     }
-
 }

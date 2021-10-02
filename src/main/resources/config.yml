@@ -1,4 +1,3 @@
-help_topic: '[YOUR_SERVER_NAME]'
 appwrite:
   # GET THESE FROM YOUR APPWRITE CONSOLE
   api_endpoint: 'https://[HOSTNAME_OR_IP]/v1'

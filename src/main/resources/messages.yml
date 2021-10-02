@@ -1,5 +1,6 @@
 prefix: '&d&lAppwrite &8• &7'
 commands:
+  help: "&7Help command"
   version: '&aPlugin version: {{version}}'
   set:
     player:

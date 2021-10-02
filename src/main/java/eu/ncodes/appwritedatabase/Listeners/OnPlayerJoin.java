@@ -32,7 +32,6 @@ public class OnPlayerJoin implements Listener {
 
         PluginUtils.getAllDocuments(uuid, (response) -> {
             if(response.error != null) {
-                System.out.println(response.error + "ERR!!!!");
                 // Could not load. Fine? Will be loaded later. Should not occur, only if 5XX error
                 return;
             }

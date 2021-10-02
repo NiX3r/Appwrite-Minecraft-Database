@@ -3,8 +3,12 @@ package eu.ncodes.appwritedatabase.Listeners;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import eu.ncodes.appwritedatabase.AppwriteDatabaseAPI;
 import eu.ncodes.appwritedatabase.Enums.TypeOfListEnum;
+import eu.ncodes.appwritedatabase.Instances.AppwriteCallback;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallbackError;
 import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Utils.CommandUtils;
@@ -17,6 +21,9 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static co.aikar.commands.ACFBukkitUtil.sendMsg;
 
@@ -25,7 +32,7 @@ public class OnCommandListener extends BaseCommand {
 
     @HelpCommand
     public void doHelp(CommandSender sender, CommandHelp help) {
-        sendMsg(sender, PluginVariables.config.get("help_topic"));
+        sendMsg(sender, PluginUtils.GetMessage("commands.help"));
         help.showHelp();
     }
 
@@ -45,22 +52,33 @@ public class OnCommandListener extends BaseCommand {
 
         @Subcommand("defaults|def")
         @Description("Database defaults")
-        public class DefaultsClass extends BaseCommand{
+        public class DefaultsClass extends BaseCommand {
 
             @Subcommand("inspect")
             @Syntax("<page>")
             @Description("Get 10 defaults per <page>")
             @CommandPermission("appwrite.defaults.inspect")
             @CommandCompletion("@page")
-            public void InspectCommand(CommandSender sender, int page){
-                sharedListCommand(sender, page, TypeOfListEnum.DEFAULTS);
+            public void InspectCommand(CommandSender sender, @Default("1") int page) {
+                sharedListCommand(sender, page, TypeOfListEnum.DEFAULTS, null);
             }
 
         }
 
         @Subcommand("player|p")
         @Description("Per-player data storage")
-        public class PersonalClass extends BaseCommand{
+        public class PersonalClass extends BaseCommand {
+
+            @Subcommand("inspect")
+            @Syntax("<page>")
+            @Description("Get 10 player variables per <page>")
+            @CommandPermission("appwrite.player.inspect")
+            @CommandCompletion("@players @page")
+            public void InspectCommand(CommandSender sender, String player, @Default("1") int page) {
+                String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
+
+                sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, uuid);
+            }
 
             @Subcommand("set")
             @Syntax("<player> <key> <value>")
@@ -105,7 +123,15 @@ public class OnCommandListener extends BaseCommand {
 
         @Subcommand("global|g")
         @Description("Globally shared data storage")
-        public class GlobalClass extends BaseCommand{
+        public class GlobalClass extends BaseCommand {
+            @Subcommand("inspect")
+            @Syntax("<page>")
+            @Description("Get 10 global variables per <page>")
+            @CommandPermission("appwrite.global.inspect")
+            @CommandCompletion("@page")
+            public void InspectCommand(CommandSender sender, @Default("1") int page){
+                sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, null);
+            }
 
             @Subcommand("set")
             @Syntax("<key> <value>")
@@ -175,30 +201,92 @@ public class OnCommandListener extends BaseCommand {
         }
     }
 
-    private void sharedListCommand(CommandSender sender, int page, TypeOfListEnum type){
+    private void sharedListCommand(CommandSender sender, int page, TypeOfListEnum type, String group) {
+        Consumer<JsonObject> onFinish = (data) -> {
 
-        int size = 0;
-        String cmd = "", msg = "";
-        HashMap<String, String> list = new HashMap<String, String>();
+            String msg = "";
 
-        if(type == TypeOfListEnum.DEFAULTS){
-            size = CommandUtils.getDefaultsSize();
-            cmd = "aw db def inspect";
-            list = CommandUtils.getDefaultsHashMap((page - 1) * 10);
+            String cmd = data.get("cmd").getAsString();
+            int size = data.get("size").getAsInt();
+            JsonObject list = data.get("list").getAsJsonObject();
+
+            Set<Map.Entry<String, JsonElement>> entries = list.entrySet();
+            for (Map.Entry<String, JsonElement> entry: entries) {
+                msg += "\n&b" + entry.getKey() + ": &7" + entry.getValue();
+            }
+
+            msg = ChatColor.translateAlternateColorCodes('&', msg);
+            sender.sendMessage(msg);
+            CommandUtils.sendFooter(sender, cmd, page, ((size / 10) + 1));
+        };
+
+        if(type == TypeOfListEnum.DEFAULTS) {
+            JsonObject dataObject = new JsonObject();
+
+            dataObject.addProperty("size", CommandUtils.getDefaultsSize());
+            dataObject.addProperty("cmd", "aw db def inspect");
+            dataObject.add("list", CommandUtils.getDefaultsHashMap((page - 1) * 10));
+
+            onFinish.accept(dataObject);
+        } else if(type == TypeOfListEnum.GLOBAL) {
+            String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
+
+            DocumentService.listDocuments(uuid, page, (response) -> {
+                if(response.error != null) {
+                    // TODO: Napis error message
+                    return;
+                }
+
+                JsonObject documentListObject = (JsonObject) response.value;
+                Integer sum = documentListObject.get("sum").getAsInt();
+
+                JsonObject dataJson = new JsonObject();
+
+                for(JsonElement documentEl : documentListObject.get("documents").getAsJsonArray()) {
+                    JsonObject document = documentEl.getAsJsonObject();
+
+                    dataJson.add(document.get("key").getAsString(), document.get("value"));
+                }
+
+                JsonObject dataObject = new JsonObject();
+
+                dataObject.addProperty("size", sum);
+                dataObject.addProperty("cmd", "aw db g inspect");
+                dataObject.add("list", dataJson);
+
+                onFinish.accept(dataObject);
+            });
+        } else if(type == TypeOfListEnum.PLAYER) {
+
+            DocumentService.listDocuments(group, page, (response) -> {
+                if(response.error != null) {
+                    // TODO: Napis error message
+                    return;
+                }
+
+                JsonObject documentListObject = (JsonObject) response.value;
+                Integer sum = documentListObject.get("sum").getAsInt();
+                JsonObject dataJson = new JsonObject();
+
+                for(JsonElement documentEl : documentListObject.get("documents").getAsJsonArray()) {
+                    JsonObject document = documentEl.getAsJsonObject();
+
+                    dataJson.add(document.get("key").getAsString(), document.get("value"));
+                }
+
+                JsonObject dataObject = new JsonObject();
+
+                dataObject.addProperty("size", sum);
+                dataObject.addProperty("cmd", "aw db g inspect");
+                dataObject.add("list", dataJson);
+
+                onFinish.accept(dataObject);
+            });
         }
-        System.out.println(size);
-        for(String key : list.keySet()){
-            msg += "\n&b" + key + ": &7" + list.get(key);
-        }
-
-        msg = ChatColor.translateAlternateColorCodes('&', msg);
-        sender.sendMessage(msg);
-        CommandUtils.sendFooter(sender, cmd, page, ((size / 10) + 1));
 
     }
 
     private void sharedSetCommand(CommandSender sender, String key, String value, String uuid, String playerName) {
-        // player name NULL if its global
         String messageKeyPrefix = "commands.set." + (playerName != null ? "player." : "global.");
 
         DocumentService.setDocument(uuid, key, value, (response) -> {

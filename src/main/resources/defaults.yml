@@ -1,4 +1,4 @@
 # Configure your default values here
 defaults:
-  tokens: 0
+  tokens: 10
   rank: "Unranked"

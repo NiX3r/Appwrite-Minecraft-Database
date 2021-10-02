@@ -119,12 +119,14 @@ public class DocumentService {
                                 } else {
                                     Response response = (Response) o;
                                     String json = response.body().string();
+
                                     JsonElement root = new JsonParser().parse(json);
 
                                     try {
                                         JsonObject responseJson = root.getAsJsonObject();
                                         callback.accept(new AppwriteCallback(null, responseJson, null));
                                     } catch(Exception err) {
+                                        err.printStackTrace();
                                         callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
                                     }
 
