@@ -142,7 +142,7 @@ public class PluginUtils {
                 data.put(
                         document.get("key").getAsString(),
                         new HashMap<String, Object>(){{
-                            put("value", document.get("value"));
+                            put("value", document.get("value").getAsString());
                             put("document", document.getAsJsonObject());
                         }}
                 );

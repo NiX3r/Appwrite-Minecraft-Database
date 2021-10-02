@@ -86,6 +86,7 @@ public final class AppwriteDatabase extends JavaPlugin {
             LinkedHashMap<String, CacheInstance> values = CacheManager.getInstance().getValues(group);
 
             String[] arr = new String[values.size() + 1];
+            
             values.keySet().toArray(arr);
 
             arr[arr.length - 1] = "<value>";

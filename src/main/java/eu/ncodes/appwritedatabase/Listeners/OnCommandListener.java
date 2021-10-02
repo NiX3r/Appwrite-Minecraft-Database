@@ -137,7 +137,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key> <value>")
             @Description("Update current value of <key> to a new one on global storage")
             @CommandPermission("appwrite.global.set")
-            @CommandCompletion("@players @globalkey @value")
+            @CommandCompletion("@globalkey @value")
             public void SetCommand(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedSetCommand(sender, key, value, uuid, null);
@@ -147,7 +147,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key> <value>")
             @Description("Increase the current value of <key> on global storage")
             @CommandPermission("appwrite.global.add")
-            @CommandCompletion("@players @globalkey @value")
+            @CommandCompletion("@globalkey @value")
             public void AddCommand(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedAddCommand(sender, key, value, uuid, null);
@@ -157,7 +157,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key> <value>")
             @Description("Decrease the current value of <key> on global storage")
             @CommandPermission("appwrite.global.take")
-            @CommandCompletion("@players @globalkey @value")
+            @CommandCompletion("@globalkey @value")
             public void TakeCommand(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedTakeCommand(sender, key, value, uuid, null);
@@ -167,7 +167,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key>")
             @Description("Get the current value of <key> on global storage")
             @CommandPermission("appwrite.global.get")
-            @CommandCompletion("@players @globalkey")
+            @CommandCompletion("@globalkey")
             public void GetCommand(CommandSender sender, String key) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedGetCommand(sender, key, uuid, null);
