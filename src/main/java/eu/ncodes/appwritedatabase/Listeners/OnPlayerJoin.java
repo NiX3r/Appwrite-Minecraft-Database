@@ -18,11 +18,10 @@ public class OnPlayerJoin implements Listener {
     @EventHandler
     public void On(PlayerJoinEvent e)
     {
-        OnJoin(e.getPlayer());
+        OnJoin(e.getPlayer().getUniqueId().toString());
     }
 
-    public static void OnJoin(Player p) {
-        String uuid = p.getUniqueId().toString();
+    public static void OnJoin(String uuid) {
         Set<String> defaultKeys = PluginVariables.defaults.getConfig().getConfigurationSection("defaults").getKeys(false);
 
         for(Object key : defaultKeys.toArray()) {

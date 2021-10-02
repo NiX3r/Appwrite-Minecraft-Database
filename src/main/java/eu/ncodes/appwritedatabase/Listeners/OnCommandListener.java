@@ -84,7 +84,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<player> <key> <value>")
             @Description("Update current value of <key> to a new one on player storage")
             @CommandPermission("appwrite.player.set")
-            @CommandCompletion("@players @key @value")
+            @CommandCompletion("@players @playerkey @value")
             public void SetCommand(CommandSender sender, String player, String key, String value) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedSetCommand(sender, key, value, uuid, player);
@@ -94,7 +94,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<player> <key> <value>")
             @Description("Increase the current value of <key> on player storage")
             @CommandPermission("appwrite.player.add")
-            @CommandCompletion("@players @key @value")
+            @CommandCompletion("@players @playerkey @value")
             public void AddCommand(CommandSender sender, String player, String key, String value) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedAddCommand(sender, key, value, uuid, player);
@@ -104,7 +104,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<player> <key> <value>")
             @Description("Decrease the current value of <key> on player storage")
             @CommandPermission("appwrite.player.take")
-            @CommandCompletion("@players @key @value")
+            @CommandCompletion("@players @playerkey @value")
             public void TakeCommand(CommandSender sender, String player, String key, String value) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedTakeCommand(sender, key, value, uuid, player);
@@ -114,7 +114,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<player> <key>")
             @Description("Get the current value of <key> on player storage")
             @CommandPermission("appwrite.player.get")
-            @CommandCompletion("@players @key")
+            @CommandCompletion("@players @playerkey")
             public void GetCommand(CommandSender sender, String player, String key) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedGetCommand(sender, key, uuid, player);
@@ -137,7 +137,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key> <value>")
             @Description("Update current value of <key> to a new one on global storage")
             @CommandPermission("appwrite.global.set")
-            @CommandCompletion("@players @key @value")
+            @CommandCompletion("@players @globalkey @value")
             public void SetCommand(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedSetCommand(sender, key, value, uuid, null);
@@ -147,7 +147,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key> <value>")
             @Description("Increase the current value of <key> on global storage")
             @CommandPermission("appwrite.global.add")
-            @CommandCompletion("@players @key @value")
+            @CommandCompletion("@players @globalkey @value")
             public void AddCommand(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedAddCommand(sender, key, value, uuid, null);
@@ -157,7 +157,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key> <value>")
             @Description("Decrease the current value of <key> on global storage")
             @CommandPermission("appwrite.global.take")
-            @CommandCompletion("@players @key @value")
+            @CommandCompletion("@players @globalkey @value")
             public void TakeCommand(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedTakeCommand(sender, key, value, uuid, null);
@@ -167,7 +167,7 @@ public class OnCommandListener extends BaseCommand {
             @Syntax("<key>")
             @Description("Get the current value of <key> on global storage")
             @CommandPermission("appwrite.global.get")
-            @CommandCompletion("@players @key")
+            @CommandCompletion("@players @globalkey")
             public void GetCommand(CommandSender sender, String key) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
                 sharedGetCommand(sender, key, uuid, null);

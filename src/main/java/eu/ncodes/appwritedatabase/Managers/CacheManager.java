@@ -30,6 +30,15 @@ public class CacheManager {
         return null;
     }
 
+    public LinkedHashMap<String, CacheInstance> getValues(String group) {
+        if(cache.containsKey(group)) {
+            LinkedHashMap<String, CacheInstance> playerCache = cache.get((group));
+            return playerCache;
+        }
+
+        return null;
+    }
+
     public void setValue(String group, String key, Object value, JsonObject document) {
         if(!cache.containsKey(group)) {
             cache.put(group, new LinkedHashMap());
