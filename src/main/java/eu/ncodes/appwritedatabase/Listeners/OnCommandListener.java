@@ -1,24 +1,62 @@
 package eu.ncodes.appwritedatabase.Listeners;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import eu.ncodes.appwritedatabase.AppwriteDatabaseAPI;
+import eu.ncodes.appwritedatabase.Enums.TypeOfListEnum;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallbackError;
 import eu.ncodes.appwritedatabase.Services.DocumentService;
+import eu.ncodes.appwritedatabase.Utils.CommandUtils;
 import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import static co.aikar.commands.ACFBukkitUtil.sendMsg;
+
 @CommandAlias("appwrite|aw")
 public class OnCommandListener extends BaseCommand {
+
+    @HelpCommand
+    public void doHelp(CommandSender sender, CommandHelp help) {
+        sendMsg(sender, PluginVariables.config.get("help_topic"));
+        help.showHelp();
+    }
+
+    @Subcommand("version|ver|v")
+    @Description("Command for get plugin version")
+    @CommandPermission("appwrite.version")
+    public void GetVersion(CommandSender sender){
+        // Changable version message?
+        PluginUtils.SendMessage(sender,  "commands.version", new LinkedHashMap<String, String>(){{
+            put("version", PluginVariables.Plugin.getDescription().getVersion());
+        }});
+    }
+
     @Subcommand("database|db")
     @Description("Commands related to Appwrite database")
     public class DatabaseClass extends BaseCommand {
+
+        @Subcommand("defaults|def")
+        @Description("Database defaults")
+        public class DefaultsClass extends BaseCommand{
+
+            @Subcommand("inspect")
+            @Syntax("<page>")
+            @Description("Get 10 defaults per <page>")
+            @CommandPermission("appwrite.defaults.inspect")
+            @CommandCompletion("@page")
+            public void InspectCommand(CommandSender sender, int page){
+                sharedListCommand(sender, page, TypeOfListEnum.DEFAULTS);
+            }
+
+        }
 
         @Subcommand("player|p")
         @Description("Per-player data storage")
@@ -135,6 +173,28 @@ public class OnCommandListener extends BaseCommand {
             PluginVariables.FileManager.reloadConfig("config.yml");
             PluginUtils.SendMessage(sender, "commands.reload.config");
         }
+    }
+
+    private void sharedListCommand(CommandSender sender, int page, TypeOfListEnum type){
+
+        int size = 0;
+        String cmd = "", msg = "";
+        HashMap<String, String> list = new HashMap<String, String>();
+
+        if(type == TypeOfListEnum.DEFAULTS){
+            size = CommandUtils.getDefaultsSize();
+            cmd = "aw db def inspect";
+            list = CommandUtils.getDefaultsHashMap((page - 1) * 10);
+        }
+        System.out.println(size);
+        for(String key : list.keySet()){
+            msg += "\n&b" + key + ": &7" + list.get(key);
+        }
+
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        sender.sendMessage(msg);
+        CommandUtils.sendFooter(sender, cmd, page, ((size / 10) + 1));
+
     }
 
     private void sharedSetCommand(CommandSender sender, String key, String value, String uuid, String playerName) {

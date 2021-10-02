@@ -1,5 +1,6 @@
 prefix: '&d&lAppwrite &8• &7'
 commands:
+  version: '&aPlugin version: {{version}}'
   set:
     player:
       success: "&a█ &7Key &f{{key}} &7successfully set to &f{{value}} &7for player &f{{player}}"
