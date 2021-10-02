@@ -1,5 +1,6 @@
 package eu.ncodes.appwritedatabase.Services;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -89,6 +91,59 @@ public class DocumentService {
         }
     }
 
+    public static void listDocuments(String group, Integer page, Consumer<AppwriteCallback> callback) {
+        try {
+            ArrayList<String> filters = new ArrayList<>();
+            filters.add("minecraftUUID=" + group);
+
+            PluginVariables.AppwriteDatabase.listDocuments(
+                    PluginVariables.DataCollectionID,
+                    filters,
+                    10,
+                    10 * (page-1),
+                    "key",
+                    "ASC",
+                    new Continuation<Response>() {
+                        @NotNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return EmptyCoroutineContext.INSTANCE;
+                        }
+
+                        @Override
+                        public void resumeWith(@NotNull Object o) {
+                            try {
+                                if (o instanceof Result.Failure) {
+                                    Result.Failure failure = (Result.Failure) o;
+                                    throw failure.exception;
+                                } else {
+                                    Response response = (Response) o;
+                                    String json = response.body().string();
+                                    JsonElement root = new JsonParser().parse(json);
+
+                                    try {
+                                        JsonObject responseJson = root.getAsJsonObject();
+                                        callback.accept(new AppwriteCallback(null, responseJson, null));
+                                    } catch(Exception err) {
+                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
+                                    }
+
+                                    response.close();
+                                }
+                            } catch (Throwable th) {
+                                th.printStackTrace();
+                                callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+                            }
+                        }
+                    }
+            );
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+        }
+    }
+
     public static void setDocument(String group, String key, String value, Consumer<AppwriteCallback> callback) {
         CacheInstance cacheSnapshot = CacheManager.getInstance().getValue(group, key);
 
@@ -109,7 +164,7 @@ public class DocumentService {
         getDocument(group, key, (response) -> {
             if(response.error != null) {
                 // createDocument
-                Map<String, String> document = new HashMap<>();
+                Map<String, String> document = new LinkedHashMap<>();
                 document.put("minecraftUUID", group);
                 document.put("key", key);
                 document.put("value", value);
@@ -133,7 +188,7 @@ public class DocumentService {
                                             throw failure.exception;
                                         } else {
                                             Response response = (Response) o;
-                                            if(response.code() == 200) {
+                                            if(response.code() == 200 || response.code() == 201) {
                                                 String json = response.body().string();
                                                 JsonElement root = new JsonParser().parse(json);
                                                 callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));
@@ -162,7 +217,7 @@ public class DocumentService {
                 // updateDocument
                 String documentId = response.document.get("$id").getAsString();
 
-                Map<String, String> document = new HashMap<>();
+                Map<String, String> document = new LinkedHashMap<>();
                 document.put("minecraftUUID", group);
                 document.put("key", key);
                 document.put("value", value);
@@ -187,7 +242,7 @@ public class DocumentService {
                                             throw failure.exception;
                                         } else {
                                             Response response = (Response) o;
-                                            if(response.code() == 200) {
+                                            if(response.code() == 200 || response.code() == 201) {
                                                 String json = response.body().string();
                                                 JsonElement root = new JsonParser().parse(json);
                                                 callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));

@@ -1,20 +1,19 @@
 package eu.ncodes.appwritedatabase;
 
 import co.aikar.commands.BukkitCommandManager;
-import eu.ncodes.appwritedatabase.Instances.PluginMessagesInstance;
+import com.google.common.collect.ImmutableList;
 import eu.ncodes.appwritedatabase.Listeners.OnCommandListener;
+import eu.ncodes.appwritedatabase.Listeners.OnPlayerJoin;
+import eu.ncodes.appwritedatabase.Listeners.OnPlayerLeave;
+import eu.ncodes.appwritedatabase.Managers.FileManager;
 import eu.ncodes.appwritedatabase.Services.CreateCollectionService;
 import eu.ncodes.appwritedatabase.Services.GetCollectionListService;
-import eu.ncodes.appwritedatabase.Utils.FileDefaults;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
 import io.appwrite.Client;
 import io.appwrite.services.Database;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.util.concurrent.CompletableFuture;
 
 public final class AppwriteDatabase extends JavaPlugin {
 
@@ -22,98 +21,64 @@ public final class AppwriteDatabase extends JavaPlugin {
 
         // Initialize minecraft plugin variable
         PluginVariables.Plugin = this;
+        PluginVariables.FileManager = new FileManager(this);
 
         // Create config if needed and load it
-        getConfig().options().copyDefaults(true);
-        saveConfig();
-        FileDefaults.ConfigYAML();
+        PluginVariables.config = PluginVariables.FileManager.getConfig("config.yml");
+        PluginVariables.config.copyDefaults(true).save();
 
-        // Create files defaults if needed
-        FileDefaults.MessagesYAML();
+        PluginVariables.lang = PluginVariables.FileManager.getConfig("messages.yml");
+        PluginVariables.lang.copyDefaults(true).save();
 
-        // Load data from config
-        ReloadConfig();
+        PluginVariables.defaults = PluginVariables.FileManager.getConfig("defaults.yml");
+        PluginVariables.defaults.copyDefaults(true).save();
 
-        // Load data from message.yml
-        ReloadMessages();
+        // Connect to Appwrite
+        PluginVariables.AppwriteClient = new Client()
+                .setEndpoint(PluginVariables.config.get("appwrite.api_endpoint"))
+                .setProject(PluginVariables.config.get("appwrite.project_id"))
+                .setKey(PluginVariables.config.get("appwrite.api_key"));
+
+        PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
+
+        //  Register events
+        getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerLeave(), this);
 
         // Initialize and register commands
         PluginVariables.CommandManager = new BukkitCommandManager(this);
+
+        PluginVariables.CommandManager.enableUnstableAPI("help");
+        PluginVariables.CommandManager.getCommandCompletions().registerCompletion("key", c -> {
+            return ImmutableList.of("<key>");
+        });
+        PluginVariables.CommandManager.getCommandCompletions().registerCompletion("value", c -> {
+            return ImmutableList.of("<value>");
+        });
+
         PluginVariables.CommandManager.registerCommand(new OnCommandListener());
 
         // Checks if collection data exists
         GetCollectionListService.GetListCollection((id) -> {
             if(id.equals("none")) {
-                System.out.println("Collection does not exist. Creating one ...");
+                getLogger().info("Collection not found. Creating ...");
                 CreateCollectionService.CreateCollection((newId) -> {
-                    System.out.println("Collection created!");
+                    getLogger().info("Collection created!");
                     PluginVariables.DataCollectionID = newId;
+                    afterEnable();
                 });
             }
             else {
                 PluginVariables.DataCollectionID = id;
+                afterEnable();
             }
         });
-
     }
 
-    public static boolean ReloadConfig() {
-
-        try {
-            File config = new File(PluginVariables.Plugin.getDataFolder() + "/config.yml");
-            FileConfiguration fConfig = YamlConfiguration.loadConfiguration(config);
-
-            PluginVariables.Prefix = fConfig.getString("Prefix");
-
-            String endpoint = fConfig.getString("Appwrite.Endpoint");
-            String project = fConfig.getString("Appwrite.Project");
-            String key = fConfig.getString("Appwrite.Key");
-
-            PluginVariables.AppwriteClient = new Client()
-                    .setEndpoint(endpoint) // Your API Endpoint
-                    .setProject(project) // Your project ID
-                    .setKey(key); // Your secret API key
-
-            PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
-
-            return true;
+    private void afterEnable() {
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            OnPlayerJoin.OnJoin(p);
         }
-        catch(Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-
-    }
-
-    public static boolean ReloadMessages() {
-
-        try {
-            File msg = new File(PluginVariables.Plugin.getDataFolder() + "/messages.yml");
-            FileConfiguration fMsg = YamlConfiguration.loadConfiguration(msg);
-
-            PluginMessagesInstance.SomethingWrong = fMsg.getString("SomethingWrong");
-            PluginMessagesInstance.SuccessReload = fMsg.getString("SuccessReload");
-            PluginMessagesInstance.UnknownCommand = fMsg.getString("UnknownCommand");
-            PluginMessagesInstance.UnSuccessReload = fMsg.getString("UnSuccessReload");
-            PluginMessagesInstance.YouDoNotHavePerm = fMsg.getString("YouDoNotHavePerm");
-            PluginMessagesInstance.DatabasePlayerGet = fMsg.getString("DatabasePlayerGet");
-            PluginMessagesInstance.DatabasePlayerAdd = fMsg.getString("DatabasePlayerAdd");
-            PluginMessagesInstance.DatabasePlayerSet = fMsg.getString("DatabasePlayerSet");
-            PluginMessagesInstance.DatabasePlayerTake = fMsg.getString("DatabasePlayerTake");
-            PluginMessagesInstance.DatabaseGlobalGet = fMsg.getString("DatabaseGlobalGet");
-            PluginMessagesInstance.DatabaseGlobalSet = fMsg.getString("DatabaseGlobalSet");
-            PluginMessagesInstance.DatabaseGlobalAdd = fMsg.getString("DatabaseGlobalAdd");
-            PluginMessagesInstance.DatabaseGlobalTake = fMsg.getString("DatabaseGlobalTake");
-            PluginMessagesInstance.CannotTakeNonExistsDocument = fMsg.getString("CannotTakeNonExistsDocument");
-            PluginMessagesInstance.CannotGetNonExistsDocument = fMsg.getString("CannotGetNonExistsDocument");
-            PluginMessagesInstance.UnccorectFormat = fMsg.getString("UnccorectFormat");
-            return true;
-        }
-        catch(Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-
     }
 
 }

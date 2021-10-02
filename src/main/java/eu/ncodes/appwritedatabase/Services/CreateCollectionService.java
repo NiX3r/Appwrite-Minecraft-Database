@@ -13,17 +13,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class CreateCollectionService {
-
+    // TODO: Refactor
     public static void CreateCollection(Consumer<String> callback) {
 
         // Create default rules
         ArrayList<Map<String, Object>> rules = new ArrayList<Map<String, Object>>();
 
-        Map<String, Object> uuid = new HashMap<>();
+        Map<String, Object> uuid = new LinkedHashMap<>();
         uuid.put("label", "Minecraft UUID");
         uuid.put("key", "minecraftUUID");
         uuid.put("type", "text");
@@ -31,7 +32,7 @@ public class CreateCollectionService {
         uuid.put("required", true);
         uuid.put("array", false);
 
-        Map<String, Object> key = new HashMap<>();
+        Map<String, Object> key = new LinkedHashMap<>();
         key.put("label", "Key");
         key.put("key", "key");
         key.put("type", "text");
@@ -39,7 +40,7 @@ public class CreateCollectionService {
         key.put("required", true);
         key.put("array", false);
 
-        Map<String, Object> value = new HashMap<>();
+        Map<String, Object> value = new LinkedHashMap<>();
         value.put("label", "Value");
         value.put("key", "value");
         value.put("type", "text");
@@ -77,6 +78,7 @@ public class CreateCollectionService {
                                     JsonElement root = new JsonParser().parse(json);
                                     callback.accept(root.getAsJsonObject().get("$id").getAsString());
                                     response.close();
+                                    return;
                                 }
                             } catch (Throwable th) {
                                 th.printStackTrace();
@@ -85,7 +87,6 @@ public class CreateCollectionService {
                     }
             );
         } catch (AppwriteException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

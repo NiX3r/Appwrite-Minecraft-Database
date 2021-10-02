@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 public class GetCollectionListService {
+    // TODO: Refactor
 
     public static void GetListCollection(Consumer<String> callback) {
 
@@ -43,23 +44,26 @@ public class GetCollectionListService {
                                      String output = e.getAsJsonObject().get("$id").getAsString();
                                      exists = true;
                                      callback.accept(output);
+                                     return;
                                  }
                              }
                              if(!exists)
                                  callback.accept("none");
                              response.close();
+                             return;
                          }
                      } catch (Throwable th) {
                          th.printStackTrace();
                          callback.accept("none");
+                         return;
                      }
                  }
              }
             );
         } catch (AppwriteException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             callback.accept("none");
+            return;
         }
 
     }

@@ -1,5 +1,5 @@
-Prefix: '&4[&cAppwrite&4] &7'
-Appwrite:
-  Endpoint: 'none'
-  Project: 'none'
-  Key: 'none'
+appwrite:
+  # GET THESE FROM YOUR APPWRITE CONSOLE
+  api_endpoint: 'https://[HOSTNAME_OR_IP]/v1'
+  project_id: '5df5acd0d48c2'
+  api_key: '919c2d18fb5d4...a2ae413da83346ad2'
