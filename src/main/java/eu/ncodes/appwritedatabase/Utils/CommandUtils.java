@@ -25,7 +25,7 @@ public class CommandUtils {
 
         for(String key : keys) {
                 if(arrayIndex >= startIndex) {
-                    output.addProperty(key, PluginVariables.defaults.getConfig().getString(key));
+                    output.addProperty(key, PluginVariables.defaults.get().getConfigurationSection("defaults").getString(key));
                     outputIndex++;
                 }
 

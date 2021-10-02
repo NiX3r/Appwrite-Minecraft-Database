@@ -15,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 public class OnPlayerJoin implements Listener {
+    // TODO - nerob to po 10 ale po 100
+
     @EventHandler
     public void On(PlayerJoinEvent e)
     {

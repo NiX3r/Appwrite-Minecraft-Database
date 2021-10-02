@@ -10,6 +10,7 @@ import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Managers.FileManager;
 import eu.ncodes.appwritedatabase.Services.CreateCollectionService;
 import eu.ncodes.appwritedatabase.Services.GetCollectionListService;
+import eu.ncodes.appwritedatabase.Utils.PlaceholderAPI;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
 import io.appwrite.Client;
 import io.appwrite.services.Database;
@@ -51,6 +52,7 @@ public final class AppwriteDatabase extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerLeave(), this);
 
         // Initialize and register commands
+        // TODO - db global inspect auto complete write only '@page'
         PluginVariables.CommandManager = new BukkitCommandManager(this);
 
         PluginVariables.CommandManager.enableUnstableAPI("help");
@@ -111,6 +113,12 @@ public final class AppwriteDatabase extends JavaPlugin {
                 afterEnable();
             }
         });
+
+        // Create instance of PlaceholderAPI
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPI().register();
+        }
+
     }
 
     private void afterEnable() {

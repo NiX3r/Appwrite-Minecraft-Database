@@ -1,19 +1,29 @@
 package eu.ncodes.appwritedatabase;
 
+import eu.ncodes.appwritedatabase.Instances.CacheInstance;
 import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 
 import java.util.function.Consumer;
 
+// TODO - Add global methods
+
 public class AppwriteDatabaseAPI {
     public static String GLOBAL_GROUP_NAME = "$global";
+
+    public static Object getGlobalValueSync(String key){
+        return getValueSync(GLOBAL_GROUP_NAME, key);
+    }
 
     public static Object getValueSync(String group, String key) {
         // Value is returned instantly. Can be null
 
-        Object cachedValue = CacheManager.getInstance().getValue(group, key).value;
-        return cachedValue;
+        CacheInstance cachedValue = CacheManager.getInstance().getValue(group, key);
+        if(cachedValue == null) {
+            return null;
+        }
+        return cachedValue.value;
     }
 
     public static void getValueAsync(String group, String key, Consumer<Object> callback) {

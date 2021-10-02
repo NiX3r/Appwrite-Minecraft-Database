@@ -6,3 +6,4 @@ prefix: AppwriteAPI
 authors: [ nCodes, Meldiron ]
 description: Utility Minecraft plugin that creates persistent data storage while using Appwrite
 website: https://ncodes.eu
+softdepend: [PlaceholderAPI]

@@ -175,6 +175,7 @@ public class OnCommandListener extends BaseCommand {
         }
     }
 
+    // TODO - reloads dont work (NullPointerException)
     @Subcommand("reload|r")
     public class ReloadClass extends BaseCommand{
 
@@ -212,7 +213,7 @@ public class OnCommandListener extends BaseCommand {
 
             Set<Map.Entry<String, JsonElement>> entries = list.entrySet();
             for (Map.Entry<String, JsonElement> entry: entries) {
-                msg += "\n&b" + entry.getKey() + ": &7" + entry.getValue();
+                msg += "\n&b" + entry.getKey() + ": &7" + entry.getValue().getAsString();
             }
 
             msg = ChatColor.translateAlternateColorCodes('&', msg);
