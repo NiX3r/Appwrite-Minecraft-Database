@@ -28,32 +28,35 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
-
-        if(player == null) {
-            return null;
-        }
-
-        String[] splitter = params.split("_");
-
-        if(splitter.length >= 2) {
-
-            switch (splitter[0]){
-
-                // If placeholder stands for global
-                case "g":
-                    return AppwriteDatabaseAPI.getGlobalValueSync(splitter[1]).toString();
-                // If placeholder stands for player
-                case "p":
-                    return AppwriteDatabaseAPI.getValueSync(player.getUniqueId().toString(), splitter[1]).toString();
-                // If placeholder stands for player other
-                case "po":
-                    String uuid = Bukkit.getOfflinePlayer(splitter[1]).getUniqueId().toString();
-                    return AppwriteDatabaseAPI.getValueSync(uuid, splitter[2]).toString();
+        try {
+            if(player == null) {
+                return "ERROR";
             }
 
+            String[] splitter = params.split("_");
+
+            if(splitter.length >= 2) {
+
+                switch (splitter[0]) {
+                    // If placeholder stands for global
+                    case "g":
+                        return AppwriteDatabaseAPI.getGlobalValueSync(splitter[1]).toString();
+                    // If placeholder stands for player
+                    case "p":
+                        return AppwriteDatabaseAPI.getValueSync(player.getUniqueId().toString(), splitter[1]).toString();
+                    // If placeholder stands for player other
+                    case "po":
+                        String uuid = Bukkit.getOfflinePlayer(splitter[1]).getUniqueId().toString();
+                        return AppwriteDatabaseAPI.getValueSync(uuid, splitter[2]).toString();
+                }
+
+            }
+        } catch(Exception exp) {
+            exp.printStackTrace();
+            return "ERROR";
         }
 
-        return null; // Placeholder is unknown by the Expansion
+        return "ERROR";
     }
 
 }
