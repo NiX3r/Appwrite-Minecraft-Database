@@ -30,7 +30,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         try {
             if(player == null) {
-                return "ERROR";
+                return "0";
             }
 
             String[] splitter = params.split("_");
@@ -52,11 +52,10 @@ public class PlaceholderAPI extends PlaceholderExpansion {
 
             }
         } catch(Exception exp) {
-            exp.printStackTrace();
-            return "ERROR";
+            return "0";
         }
 
-        return "ERROR";
+        return "0";
     }
 
 }
