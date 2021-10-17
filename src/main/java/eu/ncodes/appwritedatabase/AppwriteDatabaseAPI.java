@@ -21,7 +21,7 @@ public class AppwriteDatabaseAPI {
 
         CacheInstance cachedValue = CacheManager.getInstance().getValue(group, key);
         if(cachedValue == null) {
-            return null;
+            return "0";
         }
         return cachedValue.value;
     }
@@ -31,7 +31,7 @@ public class AppwriteDatabaseAPI {
 
         DocumentService.getDocument(group, key, (response) -> {
             if(response.error != null) {
-                callback.accept(null);
+                callback.accept("0");
             }
 
             callback.accept(response.value);
@@ -51,7 +51,7 @@ public class AppwriteDatabaseAPI {
 
         DocumentService.setDocument(group, key, value.toString(), (response) -> {
             if(response.error != null) {
-                callback.accept(null);
+                callback.accept("0");
             }
 
             callback.accept(response.value);
@@ -62,7 +62,7 @@ public class AppwriteDatabaseAPI {
         // This will run async to get it into database, but you get response right away
         // We use value from cache instead of trying to contact server if needed
 
-        String oldValue = CacheManager.getInstance().getValue(group, key).toString();
+        String oldValue = CacheManager.getInstance().getValue(group, key).value.toString();
 
         if(oldValue != null) {
             String newValue = PluginUtils.takeValue(oldValue, value.toString());
@@ -77,7 +77,7 @@ public class AppwriteDatabaseAPI {
         // This will run async to get it into database, but you get response right away
         // We use value from cache instead of trying to contact server if needed
 
-        String oldValue = CacheManager.getInstance().getValue(group, key).toString();
+        String oldValue = CacheManager.getInstance().getValue(group, key).value.toString();
 
         if(oldValue != null) {
             String newValue = PluginUtils.addValue(oldValue, value.toString());
@@ -105,7 +105,7 @@ public class AppwriteDatabaseAPI {
 
             DocumentService.setDocument(group, key, newValue, (setResponse) -> {
                 if(setResponse.error != null) {
-                    callback.accept(null);
+                    callback.accept("0");
                     return;
                 }
 
