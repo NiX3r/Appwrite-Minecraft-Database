@@ -64,26 +64,33 @@ public class AppwriteDatabaseAPI {
 
         String oldValue = CacheManager.getInstance().getValue(group, key).value.toString();
 
-        if(oldValue != null) {
-            String newValue = PluginUtils.takeValue(oldValue, value.toString());
-            DocumentService.setDocument(group, key, newValue, (response) -> { });
-            return CacheManager.getInstance().getValue(group, key).value;
-        } else {
-            return setValueSync(group, key, value);
-        }
+       try {
+           if(oldValue != null) {
+               String newValue = PluginUtils.takeValue(oldValue, value.toString());
+               DocumentService.setDocument(group, key, newValue, (response) -> { });
+               return CacheManager.getInstance().getValue(group, key).value;
+           } else {
+               throw  new Exception("Old valut not set");
+           }
+       } catch(Exception exp) {
+           return setValueSync(group, key, value);
+       }
     }
 
     public static Object addValueSync(String group, String key, Object value) {
         // This will run async to get it into database, but you get response right away
         // We use value from cache instead of trying to contact server if needed
 
-        String oldValue = CacheManager.getInstance().getValue(group, key).value.toString();
-
-        if(oldValue != null) {
-            String newValue = PluginUtils.addValue(oldValue, value.toString());
-            DocumentService.setDocument(group, key, newValue, (response) -> { });
-            return CacheManager.getInstance().getValue(group, key).value;
-        } else {
+        try {
+            String oldValue = CacheManager.getInstance().getValue(group, key).value.toString();
+            if(oldValue != null) {
+                String newValue = PluginUtils.addValue(oldValue, value.toString());
+                DocumentService.setDocument(group, key, newValue, (response) -> { });
+                return CacheManager.getInstance().getValue(group, key).value;
+            } else {
+                throw  new Exception("Old valut not set");
+            }
+        } catch(Exception exp) {
             return setValueSync(group, key, value);
         }
     }
