@@ -14,8 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class FileManager {
 
-    private final JavaPlugin                plugin;
-    private LinkedHashMap<String, Config> configs    = new LinkedHashMap<String, Config>();
+    private final JavaPlugin plugin;
+    private LinkedHashMap<String, Config> configs = new LinkedHashMap<String, Config>();
 
     public FileManager(JavaPlugin plugin)
     {

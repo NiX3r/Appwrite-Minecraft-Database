@@ -39,6 +39,8 @@ public final class AppwriteDatabase extends JavaPlugin {
         PluginVariables.defaults = PluginVariables.FileManager.getConfig("defaults.yml");
         PluginVariables.defaults.copyDefaults(true).save();
 
+        // TODO - Check if config is not default
+
         // Connect to Appwrite
         PluginVariables.AppwriteClient = new Client()
                 .setEndpoint(PluginVariables.config.get("appwrite.api_endpoint"))

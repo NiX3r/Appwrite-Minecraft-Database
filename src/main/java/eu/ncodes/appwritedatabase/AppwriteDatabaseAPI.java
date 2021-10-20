@@ -7,7 +7,7 @@ import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 
 import java.util.function.Consumer;
 
-// TODO - Add async methods
+// TODO - Add async methods!
 
 public class AppwriteDatabaseAPI {
     public static String GLOBAL_GROUP_NAME = "$global";

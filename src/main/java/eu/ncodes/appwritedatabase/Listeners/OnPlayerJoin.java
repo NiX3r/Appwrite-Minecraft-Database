@@ -41,11 +41,6 @@ public class OnPlayerJoin implements Listener {
 
             LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) response.value;
 
-            System.out.println(response.value);
-            for(String k : ((LinkedHashMap<String, Object>) response.value).keySet()) {
-                System.out.println(k + " - " + ((LinkedHashMap<String, Object>) response.value).get(k).toString());
-            }
-
             for(String key : data.keySet()) {
                 HashMap<String, Object> value = (HashMap<String, Object>) data.get(key);
                 CacheManager.getInstance().setValue(uuid, key, value.get("value"), (JsonObject) value.get("document"));
