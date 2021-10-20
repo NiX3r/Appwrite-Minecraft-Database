@@ -7,7 +7,7 @@ import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 
 import java.util.function.Consumer;
 
-// TODO - Add global methods
+// TODO - Add async methods
 
 public class AppwriteDatabaseAPI {
     public static String GLOBAL_GROUP_NAME = "$global";
@@ -45,6 +45,10 @@ public class AppwriteDatabaseAPI {
         return CacheManager.getInstance().getValue(group, key).value;
     }
 
+    public static Object setGlobalValueSync(String key, Object value){
+        return setValueSync(GLOBAL_GROUP_NAME, key, value);
+    }
+
     public static void setValueAsync(String group, String key, Object value, Consumer<Object> callback) {
         // Value will be set sync and roll-backed if needed
         // Callback is called when value successfully arrives to Appwrite
@@ -77,6 +81,10 @@ public class AppwriteDatabaseAPI {
        }
     }
 
+    public static Object takeGlobalValueSync(String key, Object value){
+        return takeValueSync(GLOBAL_GROUP_NAME, key, value);
+    }
+
     public static Object addValueSync(String group, String key, Object value) {
         // This will run async to get it into database, but you get response right away
         // We use value from cache instead of trying to contact server if needed
@@ -93,6 +101,10 @@ public class AppwriteDatabaseAPI {
         } catch(Exception exp) {
             return setValueSync(group, key, value);
         }
+    }
+
+    public static Object addGlobalValueSync(String key, Object value){
+        return addValueSync(GLOBAL_GROUP_NAME, key, value);
     }
 
     public static void takeValueAsync(String group, String key, Object value, Consumer<Object> callback) {
