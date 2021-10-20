@@ -44,7 +44,7 @@ public final class AppwriteDatabase extends JavaPlugin {
         if(PluginVariables.config.get("appwrite.api_endpoint").equals("https://[HOSTNAME_OR_IP]/v1") ||
                 PluginVariables.config.get("appwrite.project_id").equals("5df5acd0d48c2") ||
                 PluginVariables.config.get("appwrite.api_key").equals("919c2d18fb5d4...a2ae413da83346ad2")){
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "!! Config is a default template. Turning off plugin...");
+            getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "!! Config is a default template. Turning off plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
         else{ // Countinue loading plugin
@@ -61,7 +61,7 @@ public final class AppwriteDatabase extends JavaPlugin {
             }
             catch (Exception ex){
                 ex.printStackTrace();
-                getServer().getConsoleSender().sendMessage(ChatColor.RED + "!! Config connect to Appwrite database. Turning off plugin...");
+                getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "!! Config connect to Appwrite database. Turning off plugin...");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
 

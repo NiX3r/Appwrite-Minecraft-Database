@@ -41,9 +41,8 @@ public class OnCommandListener extends BaseCommand {
     @CommandPermission("appwrite.version")
     public void GetVersion(CommandSender sender){
         // TODO - Add "powered by Appwrite" on the end
-        // Changable version message?
         PluginUtils.SendMessage(sender,  "commands.version", new LinkedHashMap<String, String>(){{
-            put("version", PluginVariables.Plugin.getDescription().getVersion());
+            put("version", PluginVariables.Plugin.getDescription().getVersion() + " - powered by Appwrite " + ChatColor.DARK_RED + "❤");
         }});
     }
 
