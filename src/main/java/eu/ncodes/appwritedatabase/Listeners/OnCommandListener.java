@@ -77,7 +77,6 @@ public class OnCommandListener extends BaseCommand {
             @CommandCompletion("@players @page")
             public void InspectCommand(CommandSender sender, String player, @Default("1") int page) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
-
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, uuid);
             }
 
@@ -87,10 +86,6 @@ public class OnCommandListener extends BaseCommand {
             @CommandPermission("appwrite.player.set")
             @CommandCompletion("@players @playerkey @value")
             public void SetCommand(CommandSender sender, String player, String key, String value) {
-                if(Bukkit.getOfflinePlayer(player) == null){
-                    PluginUtils.SendMessage(sender, "commands.set.player.uuid_not_found");
-                    return;
-                }
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedSetCommand(sender, key, value, uuid, player);
             }
@@ -101,10 +96,6 @@ public class OnCommandListener extends BaseCommand {
             @CommandPermission("appwrite.player.add")
             @CommandCompletion("@players @playerkey @value")
             public void AddCommand(CommandSender sender, String player, String key, String value) {
-                if(Bukkit.getOfflinePlayer(player) == null){
-                    PluginUtils.SendMessage(sender, "commands.add.player.uuid_not_found");
-                    return;
-                }
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedAddCommand(sender, key, value, uuid, player);
             }
@@ -115,10 +106,6 @@ public class OnCommandListener extends BaseCommand {
             @CommandPermission("appwrite.player.take")
             @CommandCompletion("@players @playerkey @value")
             public void TakeCommand(CommandSender sender, String player, String key, String value) {
-                if(Bukkit.getOfflinePlayer(player) == null){
-                    PluginUtils.SendMessage(sender, "commands.take.player.uuid_not_found");
-                    return;
-                }
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedTakeCommand(sender, key, value, uuid, player);
             }
@@ -129,10 +116,6 @@ public class OnCommandListener extends BaseCommand {
             @CommandPermission("appwrite.player.get")
             @CommandCompletion("@players @playerkey")
             public void GetCommand(CommandSender sender, String player, String key) {
-                if(Bukkit.getOfflinePlayer(player) == null){
-                    PluginUtils.SendMessage(sender, "commands.get.player.uuid_not_found");
-                    return;
-                }
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedGetCommand(sender, key, uuid, player);
             }
