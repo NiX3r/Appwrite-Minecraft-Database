@@ -12,16 +12,16 @@ import eu.ncodes.appwritedatabase.Services.CreateCollectionService;
 import eu.ncodes.appwritedatabase.Services.GetCollectionListService;
 import eu.ncodes.appwritedatabase.Utils.PlaceholderAPI;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
+import eu.ncodes.appwritedatabase.Utils.SecretUtils;
 import io.appwrite.Client;
 import io.appwrite.services.Database;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedHashMap;
-import java.util.logging.Logger;
 
 public final class AppwriteDatabase extends JavaPlugin {
 
@@ -136,6 +136,9 @@ public final class AppwriteDatabase extends JavaPlugin {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 new PlaceholderAPI().register();
             }
+
+            // Create instance of bStats
+            Metrics metrics = new Metrics(this, SecretUtils.GetMetricsID());
 
         }
 
