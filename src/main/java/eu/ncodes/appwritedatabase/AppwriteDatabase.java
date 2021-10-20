@@ -15,11 +15,13 @@ import eu.ncodes.appwritedatabase.Utils.PluginVariables;
 import io.appwrite.Client;
 import io.appwrite.services.Database;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedHashMap;
+import java.util.logging.Logger;
 
 public final class AppwriteDatabase extends JavaPlugin {
 
@@ -39,7 +41,12 @@ public final class AppwriteDatabase extends JavaPlugin {
         PluginVariables.defaults = PluginVariables.FileManager.getConfig("defaults.yml");
         PluginVariables.defaults.copyDefaults(true).save();
 
-        // TODO - Check if config is not default
+        if(PluginVariables.config.get("appwrite.api_endpoint").equals("https://[HOSTNAME_OR_IP]/v1") ||
+                PluginVariables.config.get("appwrite.project_id").equals("5df5acd0d48c2") ||
+                PluginVariables.config.get("appwrite.api_key").equals("919c2d18fb5d4...a2ae413da83346ad2")){
+            getLogger().info(ChatColor.translateAlternateColorCodes('&', "&█ &7Config is a default template. Turning off plugin..."));
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
 
         // Connect to Appwrite
         PluginVariables.AppwriteClient = new Client()

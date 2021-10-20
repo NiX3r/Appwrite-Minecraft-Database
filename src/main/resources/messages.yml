@@ -6,7 +6,6 @@ commands:
     player:
       success: "&a█ &7Key &f{{key}} &7successfully set to &f{{value}} &7for player &f{{player}}"
       not_found: "&6█ &7Cannot find collection. Please try again later"
-      uuid_not_found: "&6█ &7Cannot find player. Please try again later"
       unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
     global:
       success: "&a█ &7Key &f{{key}} &7successfully set to &f{{value}} &7on &fglobal &7storage"
@@ -16,7 +15,6 @@ commands:
     player:
       success: "&a█ &7Key &f{{key}} &7successfully updated &8(add) &7to &f{{value}} &7for player &f{{player}}"
       not_found: "&6█ &7Cannot find collection. Please try again later"
-      uuid_not_found: "&6█ &7Cannot find player. Please try again later"
       unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
     global:
       success: "&a█ &7Key &f{{key}} &7successfully updated &8(add) &7to &f{{value}} &7on &fglobal &7storage"
@@ -26,7 +24,6 @@ commands:
     player:
       success: "&a█ &7Key &f{{key}} &7successfully updated &8(take) &7to &f{{value}} &7for player &f{{player}}"
       not_found: "&6█ &7Cannot find collection. Please try again later"
-      uuid_not_found: "&6█ &7Cannot find player. Please try again later"
       unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
     global:
       success: "&a█ &7Key &f{{key}} &7successfully updated &8(take) &7to &f{{value}} &7on &fglobal &7storage"
@@ -36,7 +33,6 @@ commands:
     player:
       success: "&a█ &f{{key}}&7: &f{{value}} &8({{player}})"
       not_found: "&6█ &7Key &f{{key}} &7not found. Please set it first or define default value."
-      uuid_not_found: "&6█ &7Cannot find player. Please try again later"
       unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
     global:
       success: "&a█ &f{{key}}&7: &f{{value}} &8(global)"
