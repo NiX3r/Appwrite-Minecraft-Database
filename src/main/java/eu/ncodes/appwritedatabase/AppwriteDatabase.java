@@ -44,88 +44,99 @@ public final class AppwriteDatabase extends JavaPlugin {
         if(PluginVariables.config.get("appwrite.api_endpoint").equals("https://[HOSTNAME_OR_IP]/v1") ||
                 PluginVariables.config.get("appwrite.project_id").equals("5df5acd0d48c2") ||
                 PluginVariables.config.get("appwrite.api_key").equals("919c2d18fb5d4...a2ae413da83346ad2")){
-            getLogger().info(ChatColor.translateAlternateColorCodes('&', "&█ &7Config is a default template. Turning off plugin..."));
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "!! Config is a default template. Turning off plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        else{ // Countinue loading plugin
 
-        // Connect to Appwrite
-        PluginVariables.AppwriteClient = new Client()
-                .setEndpoint(PluginVariables.config.get("appwrite.api_endpoint"))
-                .setProject(PluginVariables.config.get("appwrite.project_id"))
-                .setKey(PluginVariables.config.get("appwrite.api_key"));
+            // Surround it with try-catch
+            try{
+                // Connect to Appwrite
+                PluginVariables.AppwriteClient = new Client()
+                        .setEndpoint(PluginVariables.config.get("appwrite.api_endpoint"))
+                        .setProject(PluginVariables.config.get("appwrite.project_id"))
+                        .setKey(PluginVariables.config.get("appwrite.api_key"));
 
-        PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
+                PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+                getServer().getConsoleSender().sendMessage(ChatColor.RED + "!! Config connect to Appwrite database. Turning off plugin...");
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
 
-        //  Register events
-        getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerLeave(), this);
+            //  Register events
+            getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
+            getServer().getPluginManager().registerEvents(new OnPlayerLeave(), this);
 
-        // Initialize and register commands
-        // TODO - db global inspect auto complete write only '@page'
-        PluginVariables.CommandManager = new BukkitCommandManager(this);
+            // Initialize and register commands
+            // TODO - db global inspect auto complete write only '@page'
+            PluginVariables.CommandManager = new BukkitCommandManager(this);
 
-        PluginVariables.CommandManager.enableUnstableAPI("help");
-        PluginVariables.CommandManager.getCommandCompletions().registerCompletion("key", c -> {
-            return ImmutableList.of("<key>");
-        });
+            PluginVariables.CommandManager.enableUnstableAPI("help");
+            PluginVariables.CommandManager.getCommandCompletions().registerCompletion("key", c -> {
+                return ImmutableList.of("<key>");
+            });
 
-        PluginVariables.CommandManager.getCommandCompletions().registerCompletion("value", c -> {
-            return ImmutableList.of("<value>");
-        });
+            PluginVariables.CommandManager.getCommandCompletions().registerCompletion("value", c -> {
+                return ImmutableList.of("<value>");
+            });
 
-        PluginVariables.CommandManager.getCommandCompletions().registerCompletion("playerkey", c -> {
-            Player p = c.getPlayer();
-            if(p != null) {
-                String group = p.getUniqueId().toString();
+            PluginVariables.CommandManager.getCommandCompletions().registerCompletion("playerkey", c -> {
+                Player p = c.getPlayer();
+                if(p != null) {
+                    String group = p.getUniqueId().toString();
+
+                    LinkedHashMap<String, CacheInstance> values = CacheManager.getInstance().getValues(group);
+
+                    String[] arr = new String[values.size() + 1];
+                    values.keySet().toArray(arr);
+
+                    arr[arr.length - 1] = "<value>";
+
+                    return ImmutableList.copyOf(arr);
+                }
+
+                return ImmutableList.of("<value>");
+            });
+
+            PluginVariables.CommandManager.getCommandCompletions().registerCompletion("globalkey", c -> {
+                String group = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
 
                 LinkedHashMap<String, CacheInstance> values = CacheManager.getInstance().getValues(group);
 
                 String[] arr = new String[values.size() + 1];
+
                 values.keySet().toArray(arr);
 
                 arr[arr.length - 1] = "<value>";
 
                 return ImmutableList.copyOf(arr);
-            }
+            });
 
-            return ImmutableList.of("<value>");
-        });
+            PluginVariables.CommandManager.registerCommand(new OnCommandListener());
 
-        PluginVariables.CommandManager.getCommandCompletions().registerCompletion("globalkey", c -> {
-            String group = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
-
-            LinkedHashMap<String, CacheInstance> values = CacheManager.getInstance().getValues(group);
-
-            String[] arr = new String[values.size() + 1];
-            
-            values.keySet().toArray(arr);
-
-            arr[arr.length - 1] = "<value>";
-
-            return ImmutableList.copyOf(arr);
-        });
-
-        PluginVariables.CommandManager.registerCommand(new OnCommandListener());
-
-        // Checks if collection data exists
-        GetCollectionListService.GetListCollection((id) -> {
-            if(id.equals("none")) {
-                getLogger().info("Collection not found. Creating ...");
-                CreateCollectionService.CreateCollection((newId) -> {
-                    getLogger().info("Collection created!");
-                    PluginVariables.DataCollectionID = newId;
+            // Checks if collection data exists
+            GetCollectionListService.GetListCollection((id) -> {
+                if(id.equals("none")) {
+                    getLogger().info("Collection not found. Creating ...");
+                    CreateCollectionService.CreateCollection((newId) -> {
+                        getLogger().info("Collection created!");
+                        PluginVariables.DataCollectionID = newId;
+                        afterEnable();
+                    });
+                }
+                else {
+                    PluginVariables.DataCollectionID = id;
                     afterEnable();
-                });
-            }
-            else {
-                PluginVariables.DataCollectionID = id;
-                afterEnable();
-            }
-        });
+                }
+            });
 
-        // Create instance of PlaceholderAPI
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPI().register();
+            // Create instance of PlaceholderAPI
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                new PlaceholderAPI().register();
+            }
+
         }
 
     }
