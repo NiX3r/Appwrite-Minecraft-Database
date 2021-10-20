@@ -117,7 +117,10 @@ public class PluginUtils {
                 JsonObject document = documentEl.getAsJsonObject();
                 data.put(
                         document.get("key").getAsString(),
-                        (Object) document.get("value")
+                        new HashMap<String, Object>(){{
+                            put("value", document.get("value").getAsString());
+                            put("document", document.getAsJsonObject());
+                        }}
                 );
             }
 

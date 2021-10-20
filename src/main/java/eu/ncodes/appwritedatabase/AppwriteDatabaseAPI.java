@@ -120,4 +120,30 @@ public class AppwriteDatabaseAPI {
             });
         });
     }
+
+    public static void addValueAsync(String group, String key, Object value, Consumer<Object> callback) {
+        // Value will be set sync and roll-backed if needed
+        // Callback is called when value successfully arrives to Appwrite
+
+        DocumentService.getDocument(group, key, (response) -> {
+            if(response.error != null) {
+                setValueAsync(group, key, value, (setResponse) -> {
+                    callback.accept(setResponse);
+                });
+                return;
+            }
+
+            String oldValue = response.value.toString();
+            String newValue = PluginUtils.addValue(oldValue, value.toString());
+
+            DocumentService.setDocument(group, key, newValue, (setResponse) -> {
+                if(setResponse.error != null) {
+                    callback.accept("0");
+                    return;
+                }
+
+                callback.accept(setResponse.value);
+            });
+        });
+    }
 }

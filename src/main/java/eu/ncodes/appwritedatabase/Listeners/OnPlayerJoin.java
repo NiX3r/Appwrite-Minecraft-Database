@@ -24,12 +24,14 @@ public class OnPlayerJoin implements Listener {
     }
 
     public static void OnJoin(String uuid) {
+        /*
         Set<String> defaultKeys = PluginVariables.defaults.getConfig().getConfigurationSection("defaults").getKeys(false);
 
         for(Object key : defaultKeys.toArray()) {
             Object value = PluginVariables.defaults.getConfig().get("defaults." + key.toString());
             CacheManager.getInstance().setValue(uuid, key.toString(), value, null);
         }
+        */
 
         PluginUtils.getAllDocuments(uuid, (response) -> {
             if(response.error != null) {
@@ -38,6 +40,11 @@ public class OnPlayerJoin implements Listener {
             }
 
             LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) response.value;
+
+            System.out.println(response.value);
+            for(String k : ((LinkedHashMap<String, Object>) response.value).keySet()) {
+                System.out.println(k + " - " + ((LinkedHashMap<String, Object>) response.value).get(k).toString());
+            }
 
             for(String key : data.keySet()) {
                 HashMap<String, Object> value = (HashMap<String, Object>) data.get(key);

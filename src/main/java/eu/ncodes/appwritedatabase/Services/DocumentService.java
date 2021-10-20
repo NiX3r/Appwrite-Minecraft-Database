@@ -69,7 +69,7 @@ public class DocumentService {
                                         JsonObject document = root.getAsJsonObject().get("documents").getAsJsonArray().get(0).getAsJsonObject();
                                         String output = document.get("value").getAsString();
 
-                                        CacheManager.getInstance().setValue(group, key, output, document);
+                                        // CacheManager.getInstance().setValue(group, key, output, document);
                                         callback.accept(new AppwriteCallback(null, output, document));
                                     } catch(Exception err) {
                                         callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
@@ -195,6 +195,7 @@ public class DocumentService {
                                                 JsonElement root = new JsonParser().parse(json);
                                                 callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));
                                             } else {
+                                                System.out.println("GET Error: " + response.code());
                                                 onError.accept(null);
                                                 callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
                                             }
@@ -249,6 +250,7 @@ public class DocumentService {
                                                 JsonElement root = new JsonParser().parse(json);
                                                 callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));
                                             } else {
+                                                System.out.println("GET Error2: " + response.code());
                                                 onError.accept(null);
                                                 callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
                                             }
