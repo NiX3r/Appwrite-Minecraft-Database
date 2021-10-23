@@ -81,7 +81,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, uuid);
             }*/
 
-            @Subcommand("save")
+            @Subcommand("save|s")
             @Syntax("<player>")
             @Description("Manual player save")
             @CommandPermission("appwrite.player.save")
@@ -91,7 +91,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedSaveCommand(sender, uuid, false);
             }
 
-            @Subcommand("set-local")
+            @Subcommand("set-local|sl")
             @Syntax("<player> <key> <value>")
             @Description("Update current value of local <key> to a new one on player storage")
             @CommandPermission("appwrite.player.set.local")
@@ -100,7 +100,7 @@ public class OnCommandListener extends BaseCommand {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedSetCommand(sender, key, value, uuid, player, false);
             }
-            @Subcommand("set-remote")
+            @Subcommand("set-remote|sr")
             @Syntax("<player> <key> <value>")
             @Description("Update current value of remote <key> to a new one on player storage")
             @CommandPermission("appwrite.player.set.remote")
@@ -110,7 +110,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedSetCommand(sender, key, value, uuid, player, true);
             }
 
-            @Subcommand("add-local")
+            @Subcommand("add-local|al")
             @Syntax("<player> <key> <value>")
             @Description("Increase the current value of local <key> on player storage")
             @CommandPermission("appwrite.player.add.local")
@@ -120,7 +120,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedAddCommand(sender, key, value, uuid, player, false);
             }
 
-            @Subcommand("add-remote")
+            @Subcommand("add-remote|ar")
             @Syntax("<player> <key> <value>")
             @Description("Increase the current value of remote <key> on player storage")
             @CommandPermission("appwrite.player.add.remote")
@@ -130,7 +130,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedAddCommand(sender, key, value, uuid, player, true);
             }
 
-            @Subcommand("take-local")
+            @Subcommand("take-local|tl")
             @Syntax("<player> <key> <value>")
             @Description("Decrease the current value of local <key> on player storage")
             @CommandPermission("appwrite.player.take.local")
@@ -140,7 +140,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedTakeCommand(sender, key, value, uuid, player, false);
             }
 
-            @Subcommand("take-remote")
+            @Subcommand("take-remote|tr")
             @Syntax("<player> <key> <value>")
             @Description("Decrease the current value of remote <key> on player storage")
             @CommandPermission("appwrite.player.take.remote")
@@ -150,7 +150,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedTakeCommand(sender, key, value, uuid, player, true);
             }
 
-            @Subcommand("get")
+            @Subcommand("get|g")
             @Syntax("<player> <key>")
             @Description("Get the current value of <key> on player storage")
             @CommandPermission("appwrite.player.get")
@@ -174,14 +174,14 @@ public class OnCommandListener extends BaseCommand {
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, null);
             }*/
 
-            @Subcommand("save")
+            @Subcommand("save|s")
             @Description("Manual global save")
             @CommandPermission("appwrite.global.save")
             public void SavePlayer(CommandSender sender){
                 sharedSaveCommand(sender, AppwriteDatabaseAPI.GLOBAL_GROUP_NAME, false);
             }
 
-            @Subcommand("set-local")
+            @Subcommand("set-local|sl")
             @Syntax("<key> <value>")
             @Description("Update current value of local <key> to a new one on global storage")
             @CommandPermission("appwrite.global.set.local")
@@ -191,7 +191,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedSetCommand(sender, key, value, uuid, null, false);
             }
 
-            @Subcommand("set-remote")
+            @Subcommand("set-remote|sr")
             @Syntax("<key> <value>")
             @Description("Update current value of remote <key> to a new one on global storage")
             @CommandPermission("appwrite.global.set.remote")
@@ -201,7 +201,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedSetCommand(sender, key, value, uuid, null, true);
             }
 
-            @Subcommand("add-local")
+            @Subcommand("add-local|al")
             @Syntax("<key> <value>")
             @Description("Increase the current value of local <key> on global storage")
             @CommandPermission("appwrite.global.add.local")
@@ -211,7 +211,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedAddCommand(sender, key, value, uuid, null, false);
             }
 
-            @Subcommand("add-remote")
+            @Subcommand("add-remote|ar")
             @Syntax("<key> <value>")
             @Description("Increase the current value of remote <key> on global storage")
             @CommandPermission("appwrite.global.add.remote")
@@ -221,7 +221,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedAddCommand(sender, key, value, uuid, null, true);
             }
 
-            @Subcommand("take-local")
+            @Subcommand("take-local|tl")
             @Syntax("<key> <value>")
             @Description("Decrease the current value of local <key> on global storage")
             @CommandPermission("appwrite.global.take.local")
@@ -231,7 +231,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedTakeCommand(sender, key, value, uuid, null, false);
             }
 
-            @Subcommand("take-remote")
+            @Subcommand("take-remote|tr")
             @Syntax("<key> <value>")
             @Description("Decrease the current value of remote <key> on global storage")
             @CommandPermission("appwrite.global.take.remote")
@@ -241,7 +241,7 @@ public class OnCommandListener extends BaseCommand {
                 sharedTakeCommand(sender, key, value, uuid, null, true);
             }
 
-            @Subcommand("get")
+            @Subcommand("get|g")
             @Syntax("<key>")
             @Description("Get the current value of <key> on global storage")
             @CommandPermission("appwrite.global.get")
