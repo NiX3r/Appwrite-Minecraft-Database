@@ -152,8 +152,8 @@ There you can set up plugin utilities
 
 ## 🈴 Languages
 
-* 🇺🇸 [English](insert)
-* 🇨🇿 [Česky](insert)
+* 🇺🇸 [English](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/messages/english.yml)
+* 🇨🇿 [Česky](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/messages/cesky.yml)
 * 🇸🇰 [Slovensky](insert)
 
 ## 🧲 API
