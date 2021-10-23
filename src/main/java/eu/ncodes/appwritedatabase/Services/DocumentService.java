@@ -56,7 +56,7 @@ public class DocumentService {
                                         JsonObject playerData = responseJson.getAsJsonArray("documents").get(0).getAsJsonObject();
                                         callback.accept(new AppwriteCallback(null, playerData, null));
                                     } catch(Exception err) {
-                                        callback.accept(new AppwriteCallback(null, new JsonObject(), null));
+                                        createPlayer(group, callback);
                                     }
 
                                     response.close();
@@ -73,6 +73,59 @@ public class DocumentService {
             ex.printStackTrace();
             callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
         }
+    }
+
+    private static void createPlayer(String group, Consumer<AppwriteCallback> callback){
+
+        JsonObject value = new JsonObject();
+
+        Map<String, String> document = new LinkedHashMap<>();
+        document.put("minecraftUUID", group);
+        document.put("value", value.toString());
+
+        try {
+            PluginVariables.AppwriteDatabase.createDocument(
+                    PluginVariables.DataCollectionID,
+                    document,
+                    new Continuation<Response>() {
+                        @NotNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return EmptyCoroutineContext.INSTANCE;
+                        }
+
+                        @Override
+                        public void resumeWith(@NotNull Object o) {
+                            try {
+                                if (o instanceof Result.Failure) {
+                                    Result.Failure failure = (Result.Failure) o;
+                                    throw failure.exception;
+                                } else {
+                                    Response response = (Response) o;
+                                    if(response.code() == 200 || response.code() == 201) {
+                                        String json = response.body().string();
+                                        JsonElement root = new JsonParser().parse(json);
+                                        callback.accept(new AppwriteCallback(null, root.getAsJsonObject(), null));
+                                    } else {
+                                        System.out.println("GET Error22: " + response.code());
+                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+                                    }
+                                    response.close();
+                                }
+                            } catch (Throwable th) {
+                                th.printStackTrace();
+                                callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+                            }
+                        }
+                    }
+            );
+
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+        }
+
     }
 
     public static void savePlayer(String group, Consumer<AppwriteCallback> callback) {

@@ -49,21 +49,13 @@ public final class AppwriteDatabase extends JavaPlugin {
         }
         else{ // Countinue loading plugin
 
-            // Surround it with try-catch
-            try{
-                // Connect to Appwrite
-                PluginVariables.AppwriteClient = new Client()
-                        .setEndpoint(PluginVariables.config.get("appwrite.api_endpoint"))
-                        .setProject(PluginVariables.config.get("appwrite.project_id"))
-                        .setKey(PluginVariables.config.get("appwrite.api_key"));
+            // Connect to Appwrite
+            PluginVariables.AppwriteClient = new Client()
+                    .setEndpoint(PluginVariables.config.get("appwrite.api_endpoint"))
+                    .setProject(PluginVariables.config.get("appwrite.project_id"))
+                    .setKey(PluginVariables.config.get("appwrite.api_key"));
 
-                PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
-            }
-            catch (Exception ex){
-                ex.printStackTrace();
-                getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "!! Config connect to Appwrite database. Turning off plugin...");
-                Bukkit.getPluginManager().disablePlugin(this);
-            }
+            PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
 
             //  Register events
             getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
@@ -83,21 +75,26 @@ public final class AppwriteDatabase extends JavaPlugin {
             });
 
             PluginVariables.CommandManager.getCommandCompletions().registerCompletion("playerkey", c -> {
-                Player p = c.getPlayer();
-                if(p != null) {
-                    String group = p.getUniqueId().toString();
+                try{
+                    Player p = c.getPlayer();
+                    if(p != null) {
+                        String group = p.getUniqueId().toString();
 
-                    LinkedHashMap<String, CacheValueInstance> values = CacheManager.getInstance().getValues(group);
+                        LinkedHashMap<String, CacheValueInstance> values = CacheManager.getInstance().getValues(group);
 
-                    String[] arr = new String[values.size() + 1];
-                    values.keySet().toArray(arr);
+                        String[] arr = new String[values.size() + 1];
+                        values.keySet().toArray(arr);
 
-                    arr[arr.length - 1] = "<value>";
+                        arr[arr.length - 1] = "<value>";
 
-                    return ImmutableList.copyOf(arr);
+                        return ImmutableList.copyOf(arr);
+                    }
                 }
-
+                catch (Exception ex){
+                    return ImmutableList.of("<value>");
+                }
                 return ImmutableList.of("<value>");
+
             });
 
             PluginVariables.CommandManager.getCommandCompletions().registerCompletion("globalkey", c -> {
@@ -116,21 +113,29 @@ public final class AppwriteDatabase extends JavaPlugin {
 
             PluginVariables.CommandManager.registerCommand(new OnCommandListener());
 
-            // Checks if collection data exists
-            GetCollectionListService.GetListCollection((id) -> {
-                if(id.equals("none")) {
-                    getLogger().info("Collection not found. Creating ...");
-                    CreateCollectionService.CreateCollection((newId) -> {
-                        getLogger().info("Collection created!");
-                        PluginVariables.DataCollectionID = newId;
+            // Surround it with try-catch
+            try{
+                // Checks if collection data exists
+                GetCollectionListService.GetListCollection((id) -> {
+                    if(id.equals("none")) {
+                        getLogger().info("Collection not found. Creating ...");
+                        CreateCollectionService.CreateCollection((newId) -> {
+                            getLogger().info("Collection created!");
+                            PluginVariables.DataCollectionID = newId;
+                            afterEnable();
+                        });
+                    }
+                    else {
+                        PluginVariables.DataCollectionID = id;
                         afterEnable();
-                    });
-                }
-                else {
-                    PluginVariables.DataCollectionID = id;
-                    afterEnable();
-                }
-            });
+                    }
+                });
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+                getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "!! Config connect to Appwrite database. Turning off plugin...");
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
 
             // Create instance of PlaceholderAPI
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -145,10 +150,10 @@ public final class AppwriteDatabase extends JavaPlugin {
     }
 
     private void afterEnable() {
-        OnPlayerJoin.OnJoin(AppwriteDatabaseAPI.GLOBAL_GROUP_NAME);
+        OnPlayerJoin.OnJoin(AppwriteDatabaseAPI.GLOBAL_GROUP_NAME, null);
 
         for(Player p : Bukkit.getOnlinePlayers()) {
-            OnPlayerJoin.OnJoin(p.getUniqueId().toString());
+            OnPlayerJoin.OnJoin(p.getUniqueId().toString(), p);
         }
     }
 

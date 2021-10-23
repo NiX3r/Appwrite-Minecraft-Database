@@ -18,6 +18,12 @@ public class CacheManager {
 
     private LinkedHashMap<String, CacheInstance> cache = new LinkedHashMap();
 
+    public void ensureCache(String group, String docId, LinkedHashMap<String, CacheValueInstance> values){
+        if(!cache.containsKey(group)){
+            cache.put(group, new CacheInstance(group, docId, values));
+        }
+    }
+
     public CacheValueInstance getValue(String group, String key) {
         if(cache.containsKey(group)) {
             CacheInstance playerCache = cache.get((group));
