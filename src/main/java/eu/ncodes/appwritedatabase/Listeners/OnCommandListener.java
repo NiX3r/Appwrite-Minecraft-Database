@@ -46,7 +46,7 @@ public class OnCommandListener extends BaseCommand {
         }});
     }
 
-    @Subcommand("database|db")
+    @Subcommand("database|db") // TODO - Add save commands
     @Description("Commands related to Appwrite database")
     public class DatabaseClass extends BaseCommand {
 
@@ -80,6 +80,16 @@ public class OnCommandListener extends BaseCommand {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, uuid);
             }*/
+
+            @Subcommand("save")
+            @Syntax("<player>")
+            @Description("Manual player save")
+            @CommandPermission("appwrite.player.save")
+            @CommandCompletion("@players")
+            public void SavePlayer(CommandSender sender, String player){
+                String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
+                sharedSaveCommand(sender, uuid, false);
+            }
 
             @Subcommand("set-local")
             @Syntax("<player> <key> <value>")
@@ -163,6 +173,13 @@ public class OnCommandListener extends BaseCommand {
             public void InspectCommand(CommandSender sender, @Default("1") int page){
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, null);
             }*/
+
+            @Subcommand("save")
+            @Description("Manual global save")
+            @CommandPermission("appwrite.global.save")
+            public void SavePlayer(CommandSender sender){
+                sharedSaveCommand(sender, AppwriteDatabaseAPI.GLOBAL_GROUP_NAME, false);
+            }
 
             @Subcommand("set-local")
             @Syntax("<key> <value>")
@@ -263,6 +280,30 @@ public class OnCommandListener extends BaseCommand {
         }
     }
 
+    private void sharedSaveCommand(CommandSender sender, String group, Boolean isAll){
+
+        String messageKeyPrefix = "commands.save." + (group.equals(AppwriteDatabaseAPI.GLOBAL_GROUP_NAME) ?"global." : "player.");
+        if(isAll){} // TODO - Add save all
+        else{
+
+            AppwriteDatabaseAPI.saveGroupAsync(group, response -> {
+
+
+                if(response.error != null){
+                    PluginUtils.SendMessage(sender, messageKeyPrefix + "unexpected_error", new LinkedHashMap<String, String>());
+                }
+                else {
+                    PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>());
+                }
+
+            });
+
+
+
+        }
+
+    }
+
     /* TODO - Repair
     private void sharedListCommand(CommandSender sender, int page, TypeOfListEnum type, String group) {
         Consumer<JsonObject> onFinish = (data) -> {
@@ -354,9 +395,10 @@ public class OnCommandListener extends BaseCommand {
         String messageKeyPrefix = "commands.get." + (playerName != null ? "player." : "global.");
 
         if(CacheManager.getInstance().getValues(uuid).containsKey(key)) {
-            PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
+            PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
                 put("player", playerName);
                 put("key", key);
+                put("value", CacheManager.getInstance().getValues(uuid).get(key).value.toString());
             }});
         }else {
             PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{

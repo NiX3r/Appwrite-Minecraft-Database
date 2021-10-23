@@ -3,7 +3,6 @@ package eu.ncodes.appwritedatabase.Services;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallback;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallbackError;
 import eu.ncodes.appwritedatabase.Instances.CacheValueInstance;
@@ -131,19 +130,21 @@ public class DocumentService {
     public static void savePlayer(String group, Consumer<AppwriteCallback> callback) {
 
         String documentId = CacheManager.getInstance().getDocumentID(group);
-        JsonObject value = null;
+        JsonObject value = new JsonObject();
         LinkedHashMap<String, CacheValueInstance> cache =  CacheManager.getInstance().getValues(group);
         for (String item : cache.keySet()) {
-            if (NumberUtils.isNumber(cache.get(item).value.toString())) {
-                value.addProperty(item, (Number) cache.get(item).value);
-            } else {
-                value.addProperty(item, cache.get(item).value.toString());
+            if(cache.get(item).isRemote) {
+                if (NumberUtils.isNumber(cache.get(item).value.toString())) {
+                    value.addProperty(item, Long.valueOf(cache.get(item).value.toString()));
+                } else {
+                    value.addProperty(item, cache.get(item).value.toString());
+                }
             }
         }
 
         Map<String, String> document = new LinkedHashMap<>();
-        document.put("minecraftUUID", group);
-        document.put("value", value.getAsString());
+        //document.put("minecraftUUID", group);
+        document.put("value", value.toString());
 
         try {
             PluginVariables.AppwriteDatabase.updateDocument(

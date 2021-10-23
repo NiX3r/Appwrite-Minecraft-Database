@@ -1,32 +1,63 @@
 package eu.ncodes.appwritedatabase.Listeners;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import eu.ncodes.appwritedatabase.Instances.CacheValueInstance;
 import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Services.DocumentService;
-import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class OnPlayerJoin implements Listener {
 
+    // I know that this function
+
     @EventHandler
-    public void On(PlayerJoinEvent e)
+    public void On(@NotNull AsyncPlayerPreLoginEvent e)
     {
-        OnJoin(e.getPlayer().getUniqueId().toString(), e.getPlayer());
+
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        AtomicReference<Boolean> isFinished = new AtomicReference<>(false);
+        AtomicReference<Boolean> shouldKick = new AtomicReference<>(false);
+
+        OnJoin(e.getUniqueId().toString(), isSuccess -> {
+            isFinished.set(true);
+            shouldKick.set(!isSuccess);
+        });
+
+        while (!isFinished.get()){
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(300);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+
+        if(shouldKick.get()){
+            e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Could not load data. Please try again.");
+        }
+
     }
 
-    public static void OnJoin(String uuid, Player p) {
+    @EventHandler
+    public void OnJoin(PlayerJoinEvent e){
+        System.out.println(">>>>>>>>>>>>> JOINED <<<<<<<<<<<");
+    }
+
+    public static void OnJoin(String uuid, Consumer<Boolean> callback) {
         /*
         Set<String> defaultKeys = PluginVariables.defaults.getConfig().getConfigurationSection("defaults").getKeys(false);
 
@@ -36,32 +67,23 @@ public class OnPlayerJoin implements Listener {
         }
         */
 
+
         DocumentService.getPlayer(uuid, (response) -> {
             if(response.error != null) {
-                if(p != null) {
-                    Bukkit.getScheduler().runTask(PluginVariables.Plugin, x -> {
-                        p.kickPlayer("Could not load data. Please try again.");
-                    });
-                }
-                else{
-                    Bukkit.getScheduler().runTask(PluginVariables.Plugin, x -> {
-                        Bukkit.getPluginManager().disablePlugin(PluginVariables.Plugin);
-                    });
-                }
+                callback.accept(false);
                 return;
             }
 
             JsonObject data = (JsonObject) response.value;
-            System.out.println(data);
-            CacheManager.getInstance().ensureCache(uuid, data.get("$id").toString(), new LinkedHashMap<String, CacheValueInstance>());
+            CacheManager.getInstance().ensureCache(uuid, data.get("$id").getAsString(), new LinkedHashMap<String, CacheValueInstance>());
 
-            for(String key : data.keySet()) {
-                if(key.equals("$id") || key.equals("$permissions") || key.equals("$collection")){
-                    continue;
-                }
-                Object value = data.get(key);
+            JsonObject jsonData = JsonParser.parseString(data.get("value").getAsString()).getAsJsonObject();
+
+            for(String key : jsonData.keySet()) {
+                Object value = jsonData.get(key);
                 CacheManager.getInstance().setValue(uuid, key, value, true);
             }
+            callback.accept(true);
 
         });
     }

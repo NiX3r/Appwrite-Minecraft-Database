@@ -2,6 +2,16 @@ prefix: '&d&lAppwrite &8• &7'
 commands:
   help: "&7Help command"
   version: '&aPlugin version: {{version}}'
+  save:
+    player:
+      success: "&a█ &7Player succesfully saved"
+      unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
+    global:
+      success: "&a█ &7Global succesfully saved"
+      unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
+    all:
+      success: "&a█ &7Everything succesfully saved"
+      unexpected_error: "&c█ &7Unexpected server error. Please check Appwrite logs"
   set:
     player:
       success: "&a█ &7Key &f{{key}} &7successfully set to &f{{value}} &7for player &f{{player}}"

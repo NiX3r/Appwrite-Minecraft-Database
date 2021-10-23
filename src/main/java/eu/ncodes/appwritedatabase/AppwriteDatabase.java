@@ -9,6 +9,7 @@ import eu.ncodes.appwritedatabase.Listeners.OnPlayerLeave;
 import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Managers.FileManager;
 import eu.ncodes.appwritedatabase.Services.CreateCollectionService;
+import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Services.GetCollectionListService;
 import eu.ncodes.appwritedatabase.Utils.PlaceholderAPI;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
@@ -19,6 +20,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedHashMap;
@@ -58,8 +60,11 @@ public final class AppwriteDatabase extends JavaPlugin {
             PluginVariables.AppwriteDatabase = new Database(PluginVariables.AppwriteClient);
 
             //  Register events
+            System.out.println("Registering events .... 1");
             getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
+            System.out.println("Registering events .... 2");
             getServer().getPluginManager().registerEvents(new OnPlayerLeave(), this);
+            System.out.println("Registering events .... 3");
 
             // Initialize and register commands
             // TODO - db global inspect auto complete write only '@page'
@@ -81,6 +86,7 @@ public final class AppwriteDatabase extends JavaPlugin {
                         String group = p.getUniqueId().toString();
 
                         LinkedHashMap<String, CacheValueInstance> values = CacheManager.getInstance().getValues(group);
+
 
                         String[] arr = new String[values.size() + 1];
                         values.keySet().toArray(arr);
@@ -149,11 +155,33 @@ public final class AppwriteDatabase extends JavaPlugin {
 
     }
 
+    public void onDisable(){
+
+        // Save global data
+        DocumentService.savePlayer(AppwriteDatabaseAPI.GLOBAL_GROUP_NAME, response -> {
+            System.out.println("---->  SAVED!  <----");
+        });
+
+    }
+
     private void afterEnable() {
-        OnPlayerJoin.OnJoin(AppwriteDatabaseAPI.GLOBAL_GROUP_NAME, null);
+
+        OnPlayerJoin.OnJoin(AppwriteDatabaseAPI.GLOBAL_GROUP_NAME, isSuccess -> {
+            if(!isSuccess){
+                Bukkit.getScheduler().runTask(PluginVariables.Plugin, x -> {
+                    Bukkit.getPluginManager().disablePlugin(PluginVariables.Plugin);
+                });
+            }
+        });
 
         for(Player p : Bukkit.getOnlinePlayers()) {
-            OnPlayerJoin.OnJoin(p.getUniqueId().toString(), p);
+            OnPlayerJoin.OnJoin(p.getUniqueId().toString(), isSuccess ->{
+                if(!isSuccess){
+                    Bukkit.getScheduler().runTask(PluginVariables.Plugin, x -> {
+                        p.kickPlayer("Could not load data. Please try again.");
+                    });
+                }
+            });
         }
     }
 

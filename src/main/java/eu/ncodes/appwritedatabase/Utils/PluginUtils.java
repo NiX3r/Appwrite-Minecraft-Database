@@ -65,7 +65,7 @@ public class PluginUtils {
         String value = newValue;
 
         if(oldValueType.equals(TypeOfValueEnum.STRING)) {
-            value = oldValue + newValueType;
+            value = oldValue + newValue;
         } else if(oldValueType.equals(TypeOfValueEnum.INT)) {
             value = "" + (NumberUtils.toInt(oldValue, 0) + NumberUtils.toInt(newValue, 0));
         } else if(oldValueType.equals(TypeOfValueEnum.DOUBLE)) {

@@ -1,11 +1,12 @@
 package eu.ncodes.appwritedatabase;
 
+import eu.ncodes.appwritedatabase.Instances.AppwriteCallback;
 import eu.ncodes.appwritedatabase.Instances.CacheValueInstance;
 import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 
-// TODO - Save async
+import java.util.function.Consumer;
 
 public class AppwriteDatabaseAPI {
     public static String GLOBAL_GROUP_NAME = "$global";
@@ -68,5 +69,15 @@ public class AppwriteDatabaseAPI {
     public static Object addGlobalValueSync(String key, Object value, Boolean isRemote){
         return addValueSync(GLOBAL_GROUP_NAME, key, value, isRemote);
     }
+
+    public static void saveGroupAsync(String group, Consumer<AppwriteCallback> callback){
+
+        DocumentService.savePlayer(group, response ->{
+                callback.accept(response);
+        });
+
+    }
+
+    // TODO - Add save all method
 
 }
