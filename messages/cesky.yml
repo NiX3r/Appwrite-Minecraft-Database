@@ -1,0 +1,49 @@
+prefix: '&d&lAppwrite &8• &7'
+commands:
+  help: '&7Pomocne menu'
+  version: '&aVerze pluginu: {{version}}'
+  set:
+    player:
+      success: '&a█ &7Klic &f{{key}} &7uspesne nastaven na &f{{value}} &7pro hrace
+        &f{{player}}'
+      not_found: '&6█ &7Kolekce nenalezena. Prosim zkuste to pozdeji'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &7Klic &f{{key}} &7uspesne nastaven na &f{{value}} &7pro obecna data'
+      not_found: '&6█ &7Kolekce nenalezena. Prosim zkuste to pozdeji'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+  add:
+    player:
+      success: '&a█ &7Klic &f{{key}} &7uspesne aktualizovan &8(+) &7na &f{{value}}
+        &7pro hrace &f{{player}}'
+      not_found: '&6█ &7Kolekce nenalezena. Prosim zkuste to pozdeji'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &7Klic &f{{key}} &7uspesne aktualizovan &8(+) &7na &f{{value}}
+        &7pro obecna data'
+      not_found: '&6█ &7Kolekce nenalezena. Prosim zkuste to pozdeji'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+  take:
+    player:
+      success: '&a█ &7Klic &f{{key}} &7uspesne aktualizovan &8(-) &7na &f{{value}}
+        &7pro hrace &f{{player}}'
+      not_found: '&6█ &7Kolekce nenalezena. Prosim zkuste to pozdeji'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &7Klic &f{{key}} &7uspesne aktualizovan &8(-) &7na &f{{value}}
+        &7pro obecna data'
+      not_found: '&6█ &7Kolekce nenalezena. Prosim zkuste to pozdeji'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+  get:
+    player:
+      success: '&a█ &f{{key}}&7: &f{{value}} &8({{player}})'
+      not_found: '&6█ &7Klic &f{{key}} &7nenalezen. Prosim prvni nastavte nebo definujte vychozi hodnotu'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &f{{key}}&7: &f{{value}} &8(global)'
+      not_found: '&6█ &7Klic &f{{key}} &7nenalezen. Prosim prvni nastavte nebo definujte vychozi hodnotu'
+      unexpected_error: '&c█ &7Neocekavana chyba. Prosim zkontrolujte Appwrite zaznamy'
+  config:
+    all: '&a█ &7Uspesne nacteny &fvsechny &7soubory'
+    messages: '&a█ &7Uspesne nacten &7soubor &fzprav'
+    config: '&a█ &7Uspesne nacten &fmain &7soubor'

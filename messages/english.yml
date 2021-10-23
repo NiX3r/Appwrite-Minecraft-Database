@@ -1,0 +1,52 @@
+prefix: '&d&lAppwrite &8• &7'
+commands:
+  help: '&7Help command'
+  version: '&aPlugin version: {{version}}'
+  set:
+    player:
+      success: '&a█ &7Key &f{{key}} &7successfully set to &f{{value}} &7for player
+        &f{{player}}'
+      not_found: '&6█ &7Cannot find collection. Please try again later'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+    global:
+      success: '&a█ &7Key &f{{key}} &7successfully set to &f{{value}} &7on &fglobal
+        &7storage'
+      not_found: '&6█ &7Cannot find collection. Please try again later'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+  add:
+    player:
+      success: '&a█ &7Key &f{{key}} &7successfully updated &8(add) &7to &f{{value}}
+        &7for player &f{{player}}'
+      not_found: '&6█ &7Cannot find collection. Please try again later'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+    global:
+      success: '&a█ &7Key &f{{key}} &7successfully updated &8(add) &7to &f{{value}}
+        &7on &fglobal &7storage'
+      not_found: '&6█ &7Cannot find collection. Please try again later'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+  take:
+    player:
+      success: '&a█ &7Key &f{{key}} &7successfully updated &8(take) &7to &f{{value}}
+        &7for player &f{{player}}'
+      not_found: '&6█ &7Cannot find collection. Please try again later'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+    global:
+      success: '&a█ &7Key &f{{key}} &7successfully updated &8(take) &7to &f{{value}}
+        &7on &fglobal &7storage'
+      not_found: '&6█ &7Cannot find collection. Please try again later'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+  get:
+    player:
+      success: '&a█ &f{{key}}&7: &f{{value}} &8({{player}})'
+      not_found: '&6█ &7Key &f{{key}} &7not found. Please set it first or define default
+        value.'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+    global:
+      success: '&a█ &f{{key}}&7: &f{{value}} &8(global)'
+      not_found: '&6█ &7Key &f{{key}} &7not found. Please set it first or define default
+        value.'
+      unexpected_error: '&c█ &7Unexpected server error. Please check Appwrite logs'
+  config:
+    all: '&a█ &7Successfully reloaded &fall &7configs'
+    messages: '&a█ &7Successfully reloaded &fmessages &7configs'
+    config: '&a█ &7Successfully reloaded &fmain &7config'
