@@ -18,7 +18,7 @@ Utility Minecraft plugin that creates persistent data storage while using Appwri
 
 ## ⌨️ Commands
 
-*/appwrite* | */aw*
+Aliases: `appwrite` | `aw`
 
 - **Help**
   - Command for show help menu in game
