@@ -32,14 +32,6 @@ public class CreateCollectionService {
         uuid.put("required", true);
         uuid.put("array", false);
 
-        Map<String, Object> key = new LinkedHashMap<>();
-        key.put("label", "Key");
-        key.put("key", "key");
-        key.put("type", "text");
-        key.put("default", "");
-        key.put("required", true);
-        key.put("array", false);
-
         Map<String, Object> value = new LinkedHashMap<>();
         value.put("label", "Value");
         value.put("key", "value");
@@ -49,7 +41,6 @@ public class CreateCollectionService {
         value.put("array", false);
 
         rules.add(uuid);
-        rules.add(key);
         rules.add(value);
 
         try {

@@ -1,12 +1,12 @@
 package eu.ncodes.appwritedatabase.Services;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallback;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallbackError;
-import eu.ncodes.appwritedatabase.Instances.CacheInstance;
+import eu.ncodes.appwritedatabase.Instances.CacheValueInstance;
 import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
 import kotlin.Result;
@@ -14,84 +14,17 @@ import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
 import okhttp3.Response;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class DocumentService {
 
-    public static void getDocument(String group, String key, Consumer<AppwriteCallback> callback) {
-        getDocument(group, key, callback, false);
-    }
-
-    public static void getDocument(String group, String key, Consumer<AppwriteCallback> callback, boolean isDocumentImportant) {
-        CacheInstance cacheValue = CacheManager.getInstance().getValue(group, key);
-
-        if(cacheValue != null) {
-            if(isDocumentImportant == false || cacheValue.document != null) {
-                callback.accept(new AppwriteCallback(null, cacheValue.value, cacheValue.document));
-                return;
-            }
-        }
-
-        try {
-            ArrayList<String> filters = new ArrayList<>();
-            filters.add("minecraftUUID=" + group);
-            filters.add("key=" + key);
-
-            PluginVariables.AppwriteDatabase.listDocuments(
-                    PluginVariables.DataCollectionID,
-                    filters,
-                    1,
-                    new Continuation<Response>() {
-                        @NotNull
-                        @Override
-                        public CoroutineContext getContext() {
-                            return EmptyCoroutineContext.INSTANCE;
-                        }
-
-                        @Override
-                        public void resumeWith(@NotNull Object o) {
-                            try {
-                                if (o instanceof Result.Failure) {
-                                    Result.Failure failure = (Result.Failure) o;
-                                    throw failure.exception;
-                                } else {
-                                    Response response = (Response) o;
-                                    String json = response.body().string();
-                                    JsonElement root = new JsonParser().parse(json);
-
-                                    try {
-                                        JsonObject document = root.getAsJsonObject().get("documents").getAsJsonArray().get(0).getAsJsonObject();
-                                        String output = document.get("value").getAsString();
-
-                                        // CacheManager.getInstance().setValue(group, key, output, document);
-                                        callback.accept(new AppwriteCallback(null, output, document));
-                                    } catch(Exception err) {
-                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
-                                    }
-
-                                    response.close();
-                                }
-                            } catch (Throwable th) {
-                                th.printStackTrace();
-                                callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
-                            }
-                        }
-                    }
-            );
-        }
-        catch(Exception ex) {
-            ex.printStackTrace();
-            callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
-        }
-    }
-
-    public static void listDocuments(String group, Integer page, Consumer<AppwriteCallback> callback) {
+    public static void getPlayer(String group, Consumer<AppwriteCallback> callback) {
         try {
             ArrayList<String> filters = new ArrayList<>();
             filters.add("minecraftUUID=" + group);
@@ -99,10 +32,6 @@ public class DocumentService {
             PluginVariables.AppwriteDatabase.listDocuments(
                     PluginVariables.DataCollectionID,
                     filters,
-                    10,
-                    10 * (page-1),
-                    "key",
-                    "ASC",
                     new Continuation<Response>() {
                         @NotNull
                         @Override
@@ -124,10 +53,10 @@ public class DocumentService {
 
                                     try {
                                         JsonObject responseJson = root.getAsJsonObject();
-                                        callback.accept(new AppwriteCallback(null, responseJson, null));
+                                        JsonObject playerData = responseJson.getAsJsonArray("documents").get(0).getAsJsonObject();
+                                        callback.accept(new AppwriteCallback(null, playerData, null));
                                     } catch(Exception err) {
-                                        err.printStackTrace();
-                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
+                                        callback.accept(new AppwriteCallback(null, new JsonObject(), null));
                                     }
 
                                     response.close();
@@ -146,132 +75,65 @@ public class DocumentService {
         }
     }
 
-    public static void setDocument(String group, String key, String value, Consumer<AppwriteCallback> callback) {
-        CacheInstance cacheSnapshot = CacheManager.getInstance().getValue(group, key);
+    public static void savePlayer(String group, Consumer<AppwriteCallback> callback) {
 
-        if(cacheSnapshot != null) {
-            CacheManager.getInstance().setValue(group, key, value, cacheSnapshot.document);
-        } else {
-            CacheManager.getInstance().setValue(group, key, value, null);
+        String documentId = CacheManager.getInstance().getDocumentID(group);
+        JsonObject value = null;
+        LinkedHashMap<String, CacheValueInstance> cache =  CacheManager.getInstance().getValues(group);
+        for (String item : cache.keySet()) {
+            if (NumberUtils.isNumber(cache.get(item).value.toString())) {
+                value.addProperty(item, (Number) cache.get(item).value);
+            } else {
+                value.addProperty(item, cache.get(item).value.toString());
+            }
         }
 
-        Consumer<Object> onError = (_d) -> {
-            if(cacheSnapshot != null) {
-                CacheManager.getInstance().setValue(group, key, cacheSnapshot.value, cacheSnapshot.document);
-            } else {
-                CacheManager.getInstance().removeValue(group, key);
-            }
-        };
+        Map<String, String> document = new LinkedHashMap<>();
+        document.put("minecraftUUID", group);
+        document.put("value", value.getAsString());
 
-        getDocument(group, key, (response) -> {
-            if(response.error != null) {
-                // createDocument
-                Map<String, String> document = new LinkedHashMap<>();
-                document.put("minecraftUUID", group);
-                document.put("key", key);
-                document.put("value", value);
+        try {
+            PluginVariables.AppwriteDatabase.updateDocument(
+                    PluginVariables.DataCollectionID,
+                    documentId,
+                    document,
+                    new Continuation<Response>() {
+                        @NotNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return EmptyCoroutineContext.INSTANCE;
+                        }
 
-                try {
-                    PluginVariables.AppwriteDatabase.createDocument(
-                            PluginVariables.DataCollectionID,
-                            document,
-                            new Continuation<Response>() {
-                                @NotNull
-                                @Override
-                                public CoroutineContext getContext() {
-                                    return EmptyCoroutineContext.INSTANCE;
-                                }
-
-                                @Override
-                                public void resumeWith(@NotNull Object o) {
-                                    try {
-                                        if (o instanceof Result.Failure) {
-                                            Result.Failure failure = (Result.Failure) o;
-                                            throw failure.exception;
-                                        } else {
-                                            Response response = (Response) o;
-                                            if(response.code() == 200 || response.code() == 201) {
-                                                String json = response.body().string();
-                                                JsonElement root = new JsonParser().parse(json);
-                                                callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));
-                                            } else {
-                                                System.out.println("GET Error: " + response.code());
-                                                onError.accept(null);
-                                                callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
-                                            }
-                                            response.close();
-                                        }
-                                    } catch (Throwable th) {
-                                        th.printStackTrace();
-                                        onError.accept(null);
-                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+                        @Override
+                        public void resumeWith(@NotNull Object o) {
+                            try {
+                                if (o instanceof Result.Failure) {
+                                    Result.Failure failure = (Result.Failure) o;
+                                    throw failure.exception;
+                                } else {
+                                    Response response = (Response) o;
+                                    if(response.code() == 200 || response.code() == 201) {
+                                        String json = response.body().string();
+                                        JsonElement root = new JsonParser().parse(json);
+                                        callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));
+                                    } else {
+                                        System.out.println("GET Error2: " + response.code());
+                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
                                     }
+                                    response.close();
                                 }
+                            } catch (Throwable th) {
+                                th.printStackTrace();
+                                callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
                             }
-                    );
+                        }
+                    }
+            );
 
-                }
-                catch(Exception ex) {
-                    ex.printStackTrace();
-                    onError.accept(null);
-                    callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
-                }
-            } else {
-                // updateDocument
-                String documentId = response.document.get("$id").getAsString();
-
-                Map<String, String> document = new LinkedHashMap<>();
-                document.put("minecraftUUID", group);
-                document.put("key", key);
-                document.put("value", value);
-
-                try {
-                    PluginVariables.AppwriteDatabase.updateDocument(
-                            PluginVariables.DataCollectionID,
-                            documentId,
-                            document,
-                            new Continuation<Response>() {
-                                @NotNull
-                                @Override
-                                public CoroutineContext getContext() {
-                                    return EmptyCoroutineContext.INSTANCE;
-                                }
-
-                                @Override
-                                public void resumeWith(@NotNull Object o) {
-                                    try {
-                                        if (o instanceof Result.Failure) {
-                                            Result.Failure failure = (Result.Failure) o;
-                                            throw failure.exception;
-                                        } else {
-                                            Response response = (Response) o;
-                                            if(response.code() == 200 || response.code() == 201) {
-                                                String json = response.body().string();
-                                                JsonElement root = new JsonParser().parse(json);
-                                                callback.accept(new AppwriteCallback(null, value, root.getAsJsonObject()));
-                                            } else {
-                                                System.out.println("GET Error2: " + response.code());
-                                                onError.accept(null);
-                                                callback.accept(new AppwriteCallback(AppwriteCallbackError.DOCUMENT_NOT_FOUND, null, null));
-                                            }
-                                            response.close();
-                                        }
-                                    } catch (Throwable th) {
-                                        th.printStackTrace();
-                                        onError.accept(null);
-                                        callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
-                                    }
-                                }
-                            }
-                    );
-
-                }
-                catch(Exception ex) {
-                    ex.printStackTrace();
-                    onError.accept(null);
-                    callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
-                }
-            }
-        }, true);
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            callback.accept(new AppwriteCallback(AppwriteCallbackError.UNEXPECTED_ERROR, null, null));
+        }
     }
 }

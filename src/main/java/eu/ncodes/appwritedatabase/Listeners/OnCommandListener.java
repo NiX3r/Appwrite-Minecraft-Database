@@ -10,6 +10,7 @@ import eu.ncodes.appwritedatabase.AppwriteDatabaseAPI;
 import eu.ncodes.appwritedatabase.Enums.TypeOfListEnum;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallback;
 import eu.ncodes.appwritedatabase.Instances.AppwriteCallbackError;
+import eu.ncodes.appwritedatabase.Managers.CacheManager;
 import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Utils.CommandUtils;
 import eu.ncodes.appwritedatabase.Utils.PluginUtils;
@@ -49,6 +50,7 @@ public class OnCommandListener extends BaseCommand {
     @Description("Commands related to Appwrite database")
     public class DatabaseClass extends BaseCommand {
 
+        /* TODO - Repair
         @Subcommand("defaults|def")
         @Description("Database defaults")
         public class DefaultsClass extends BaseCommand {
@@ -63,11 +65,12 @@ public class OnCommandListener extends BaseCommand {
             }
 
         }
-
+         */
         @Subcommand("player|p")
         @Description("Per-player data storage")
         public class PersonalClass extends BaseCommand {
 
+            /* TODO - Repair
             @Subcommand("inspect")
             @Syntax("<page>")
             @Description("Get 10 player variables per <page>")
@@ -76,36 +79,65 @@ public class OnCommandListener extends BaseCommand {
             public void InspectCommand(CommandSender sender, String player, @Default("1") int page) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, uuid);
+            }*/
+
+            @Subcommand("set-local")
+            @Syntax("<player> <key> <value>")
+            @Description("Update current value of local <key> to a new one on player storage")
+            @CommandPermission("appwrite.player.set.local")
+            @CommandCompletion("@players @playerkey @value")
+            public void SetCommandLocal(CommandSender sender, String player, String key, String value) {
+                String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
+                sharedSetCommand(sender, key, value, uuid, player, false);
+            }
+            @Subcommand("set-remote")
+            @Syntax("<player> <key> <value>")
+            @Description("Update current value of remote <key> to a new one on player storage")
+            @CommandPermission("appwrite.player.set.remote")
+            @CommandCompletion("@players @playerkey @value")
+            public void SetCommandRemote(CommandSender sender, String player, String key, String value) {
+                String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
+                sharedSetCommand(sender, key, value, uuid, player, true);
             }
 
-            @Subcommand("set")
+            @Subcommand("add-local")
             @Syntax("<player> <key> <value>")
-            @Description("Update current value of <key> to a new one on player storage")
-            @CommandPermission("appwrite.player.set")
+            @Description("Increase the current value of local <key> on player storage")
+            @CommandPermission("appwrite.player.add.local")
             @CommandCompletion("@players @playerkey @value")
-            public void SetCommand(CommandSender sender, String player, String key, String value) {
+            public void AddCommandLocal(CommandSender sender, String player, String key, String value) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
-                sharedSetCommand(sender, key, value, uuid, player);
+                sharedAddCommand(sender, key, value, uuid, player, false);
             }
 
-            @Subcommand("add")
+            @Subcommand("add-remote")
             @Syntax("<player> <key> <value>")
-            @Description("Increase the current value of <key> on player storage")
-            @CommandPermission("appwrite.player.add")
+            @Description("Increase the current value of remote <key> on player storage")
+            @CommandPermission("appwrite.player.add.remote")
             @CommandCompletion("@players @playerkey @value")
-            public void AddCommand(CommandSender sender, String player, String key, String value) {
+            public void AddCommandRemote(CommandSender sender, String player, String key, String value) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
-                sharedAddCommand(sender, key, value, uuid, player);
+                sharedAddCommand(sender, key, value, uuid, player, true);
             }
 
-            @Subcommand("take")
+            @Subcommand("take-local")
             @Syntax("<player> <key> <value>")
-            @Description("Decrease the current value of <key> on player storage")
-            @CommandPermission("appwrite.player.take")
+            @Description("Decrease the current value of local <key> on player storage")
+            @CommandPermission("appwrite.player.take.local")
             @CommandCompletion("@players @playerkey @value")
-            public void TakeCommand(CommandSender sender, String player, String key, String value) {
+            public void TakeCommandLocal(CommandSender sender, String player, String key, String value) {
                 String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
-                sharedTakeCommand(sender, key, value, uuid, player);
+                sharedTakeCommand(sender, key, value, uuid, player, false);
+            }
+
+            @Subcommand("take-remote")
+            @Syntax("<player> <key> <value>")
+            @Description("Decrease the current value of remote <key> on player storage")
+            @CommandPermission("appwrite.player.take.remote")
+            @CommandCompletion("@players @playerkey @value")
+            public void TakeCommandRemote(CommandSender sender, String player, String key, String value) {
+                String uuid = Bukkit.getOfflinePlayer(player).getUniqueId().toString();
+                sharedTakeCommand(sender, key, value, uuid, player, true);
             }
 
             @Subcommand("get")
@@ -122,6 +154,7 @@ public class OnCommandListener extends BaseCommand {
         @Subcommand("global|g")
         @Description("Globally shared data storage")
         public class GlobalClass extends BaseCommand {
+            /* TODO - Repair
             @Subcommand("inspect")
             @Syntax("<page>")
             @Description("Get 10 global variables per <page>")
@@ -129,36 +162,66 @@ public class OnCommandListener extends BaseCommand {
             @CommandCompletion("@page")
             public void InspectCommand(CommandSender sender, @Default("1") int page){
                 sharedListCommand(sender, page, TypeOfListEnum.GLOBAL, null);
+            }*/
+
+            @Subcommand("set-local")
+            @Syntax("<key> <value>")
+            @Description("Update current value of local <key> to a new one on global storage")
+            @CommandPermission("appwrite.global.set.local")
+            @CommandCompletion("@globalkey @value")
+            public void SetCommandLocal(CommandSender sender, String key, String value) {
+                String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
+                sharedSetCommand(sender, key, value, uuid, null, false);
             }
 
-            @Subcommand("set")
+            @Subcommand("set-remote")
             @Syntax("<key> <value>")
-            @Description("Update current value of <key> to a new one on global storage")
-            @CommandPermission("appwrite.global.set")
+            @Description("Update current value of remote <key> to a new one on global storage")
+            @CommandPermission("appwrite.global.set.remote")
             @CommandCompletion("@globalkey @value")
-            public void SetCommand(CommandSender sender, String key, String value) {
+            public void SetCommandRemote(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
-                sharedSetCommand(sender, key, value, uuid, null);
+                sharedSetCommand(sender, key, value, uuid, null, true);
             }
 
-            @Subcommand("add")
+            @Subcommand("add-local")
             @Syntax("<key> <value>")
-            @Description("Increase the current value of <key> on global storage")
-            @CommandPermission("appwrite.global.add")
+            @Description("Increase the current value of local <key> on global storage")
+            @CommandPermission("appwrite.global.add.local")
             @CommandCompletion("@globalkey @value")
-            public void AddCommand(CommandSender sender, String key, String value) {
+            public void AddCommandLocal(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
-                sharedAddCommand(sender, key, value, uuid, null);
+                sharedAddCommand(sender, key, value, uuid, null, false);
             }
 
-            @Subcommand("take")
+            @Subcommand("add-remote")
             @Syntax("<key> <value>")
-            @Description("Decrease the current value of <key> on global storage")
-            @CommandPermission("appwrite.global.take")
+            @Description("Increase the current value of remote <key> on global storage")
+            @CommandPermission("appwrite.global.add.remote")
             @CommandCompletion("@globalkey @value")
-            public void TakeCommand(CommandSender sender, String key, String value) {
+            public void AddCommandRemote(CommandSender sender, String key, String value) {
                 String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
-                sharedTakeCommand(sender, key, value, uuid, null);
+                sharedAddCommand(sender, key, value, uuid, null, true);
+            }
+
+            @Subcommand("take-local")
+            @Syntax("<key> <value>")
+            @Description("Decrease the current value of local <key> on global storage")
+            @CommandPermission("appwrite.global.take.local")
+            @CommandCompletion("@globalkey @value")
+            public void TakeCommandLocal(CommandSender sender, String key, String value) {
+                String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
+                sharedTakeCommand(sender, key, value, uuid, null, false);
+            }
+
+            @Subcommand("take-remote")
+            @Syntax("<key> <value>")
+            @Description("Decrease the current value of remote <key> on global storage")
+            @CommandPermission("appwrite.global.take.remote")
+            @CommandCompletion("@globalkey @value")
+            public void TakeCommandRemote(CommandSender sender, String key, String value) {
+                String uuid = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
+                sharedTakeCommand(sender, key, value, uuid, null, true);
             }
 
             @Subcommand("get")
@@ -200,6 +263,7 @@ public class OnCommandListener extends BaseCommand {
         }
     }
 
+    /* TODO - Repair
     private void sharedListCommand(CommandSender sender, int page, TypeOfListEnum type, String group) {
         Consumer<JsonObject> onFinish = (data) -> {
 
@@ -284,129 +348,56 @@ public class OnCommandListener extends BaseCommand {
         }
 
     }
-
-    private void sharedSetCommand(CommandSender sender, String key, String value, String uuid, String playerName) {
-        String messageKeyPrefix = "commands.set." + (playerName != null ? "player." : "global.");
-
-        DocumentService.setDocument(uuid, key, value, (response) -> {
-            if(response.error != null) {
-                if(response.error.equals(AppwriteCallbackError.DOCUMENT_NOT_FOUND)) {
-                    PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
-                        put("player", playerName);
-                        put("key", key);
-                    }});
-                } else if(response.error.equals(AppwriteCallbackError.UNEXPECTED_ERROR)) {
-                    PluginUtils.SendMessage(sender, messageKeyPrefix + "unexpected_error", new LinkedHashMap<String, String>(){{
-                        put("player", playerName);
-                        put("key", key);
-                    }});
-                }
-            } else {
-                PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
-                    put("player", playerName);
-                    put("key", key);
-                    put("value", value);
-                }});
-            }
-        });
-    }
-
+    */
     private void sharedGetCommand(CommandSender sender, String key, String uuid, String playerName) {
+
         String messageKeyPrefix = "commands.get." + (playerName != null ? "player." : "global.");
 
-        DocumentService.getDocument(uuid, key, (response) -> {
-            if(response.error != null) {
-                if(response.error.equals(AppwriteCallbackError.DOCUMENT_NOT_FOUND)) {
-                    PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
-                        put("player", playerName);
-                        put("key", key);
-                    }});
-                } else if(response.error.equals(AppwriteCallbackError.UNEXPECTED_ERROR)) {
-                    PluginUtils.SendMessage(sender, messageKeyPrefix + "unexpected_error", new LinkedHashMap<String, String>(){{
-                        put("player", playerName);
-                        put("key", key);
-                    }});
-                }
-            } else {
-                String value = response.value.toString();
-                PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
-                    put("player", playerName);
-                    put("key", key);
-                    put("value", value);
-                }});
-            }
-        });
+        if(CacheManager.getInstance().getValues(uuid).containsKey(key)) {
+            PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
+                put("player", playerName);
+                put("key", key);
+            }});
+        }else {
+            PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
+                put("player", playerName);
+                put("key", key);
+            }});
+        }
+
     }
 
-    private void sharedAddCommand(CommandSender sender, String key, String value, String uuid, String playerName) {
+    private void sharedSetCommand(CommandSender sender, String key, String value, String uuid, String playerName, Boolean isRemote) {
+        String messageKeyPrefix = "commands.set." + (playerName != null ? "player." : "global.");
+
+        AppwriteDatabaseAPI.setValueSync(uuid, key, value, isRemote);
+        PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
+            put("player", playerName);
+            put("key", key);
+            put("value", value);
+        }});
+
+    }
+
+    private void sharedAddCommand(CommandSender sender, String key, String value, String uuid, String playerName, Boolean isRemote) {
         String messageKeyPrefix = "commands.add." + (playerName != null ? "player." : "global.");
+        String newValue = AppwriteDatabaseAPI.addValueSync(uuid, key, value, isRemote).toString();
 
-        DocumentService.getDocument(uuid, key, (response) -> {
-            if(response.error != null) {
-                sharedSetCommand(sender, key, value, uuid, playerName);
-                return;
-            }
-
-            String oldValue = response.value.toString();
-            String newValue = PluginUtils.addValue(oldValue, value);
-
-            DocumentService.setDocument(uuid, key, newValue, (setResponse) -> {
-                if(setResponse.error != null) {
-                    if(setResponse.error.equals(AppwriteCallbackError.DOCUMENT_NOT_FOUND)) {
-                        PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
-                            put("player", playerName);
-                            put("key", key);
-                        }});
-                    } else if(setResponse.error.equals(AppwriteCallbackError.UNEXPECTED_ERROR)) {
-                        PluginUtils.SendMessage(sender, messageKeyPrefix + "unexpected_error", new LinkedHashMap<String, String>(){{
-                            put("player", playerName);
-                            put("key", key);
-                        }});
-                    }
-                } else {
-                    PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
-                        put("player", playerName);
-                        put("key", key);
-                        put("value", newValue);
-                    }});
-                }
-            });
-        });
+        PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
+            put("player", playerName);
+            put("key", key);
+            put("value", newValue);
+        }});
     }
 
-    private void sharedTakeCommand(CommandSender sender, String key, String value, String uuid, String playerName) {
+    private void sharedTakeCommand(CommandSender sender, String key, String value, String uuid, String playerName, Boolean isRemote) {
         String messageKeyPrefix = "commands.take." + (playerName != null ? "player." : "global.");
+        String newValue = AppwriteDatabaseAPI.takeValueSync(uuid, key, value, isRemote).toString();
 
-        DocumentService.getDocument(uuid, key, (response) -> {
-            if(response.error != null) {
-                sharedSetCommand(sender, key, value, uuid, playerName);
-                return;
-            }
-
-            String oldValue = response.value.toString();
-            String newValue = PluginUtils.takeValue(oldValue, value);
-
-            DocumentService.setDocument(uuid, key, newValue, (setResponse) -> {
-                if(setResponse.error != null) {
-                    if(setResponse.error.equals(AppwriteCallbackError.DOCUMENT_NOT_FOUND)) {
-                        PluginUtils.SendMessage(sender, messageKeyPrefix + "not_found", new LinkedHashMap<String, String>(){{
-                            put("player", playerName);
-                            put("key", key);
-                        }});
-                    } else if(setResponse.error.equals(AppwriteCallbackError.UNEXPECTED_ERROR)) {
-                        PluginUtils.SendMessage(sender, messageKeyPrefix + "unexpected_error", new LinkedHashMap<String, String>(){{
-                            put("player", playerName);
-                            put("key", key);
-                        }});
-                    }
-                } else {
-                    PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
-                        put("player", playerName);
-                        put("key", key);
-                        put("value", value);
-                    }});
-                }
-            });
-        });
+        PluginUtils.SendMessage(sender, messageKeyPrefix + "success", new LinkedHashMap<String, String>(){{
+            put("player", playerName);
+            put("key", key);
+            put("value", newValue);
+        }});
     }
 }

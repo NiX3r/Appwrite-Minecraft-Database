@@ -29,6 +29,7 @@ public class GetCollectionListService {
 
                  @Override
                  public void resumeWith(@NotNull Object o) {
+                     System.out.println("Hello 1");
                      String json = "";
                      try {
                          if (o instanceof Result.Failure) {
@@ -65,6 +66,7 @@ public class GetCollectionListService {
             callback.accept("none");
             return;
         }
+        System.out.println("Hello 2");
 
     }
 

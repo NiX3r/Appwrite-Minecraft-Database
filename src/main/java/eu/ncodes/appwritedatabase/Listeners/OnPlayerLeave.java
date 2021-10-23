@@ -10,6 +10,7 @@ public class OnPlayerLeave implements Listener {
     public void On(PlayerQuitEvent e)
     {
         String uuid = e.getPlayer().getUniqueId().toString();
+        // TODO - Save remote data!
         CacheManager.getInstance().removeAll(uuid);
     }
 }

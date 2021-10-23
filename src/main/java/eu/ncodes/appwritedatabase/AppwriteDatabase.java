@@ -2,7 +2,7 @@ package eu.ncodes.appwritedatabase;
 
 import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
-import eu.ncodes.appwritedatabase.Instances.CacheInstance;
+import eu.ncodes.appwritedatabase.Instances.CacheValueInstance;
 import eu.ncodes.appwritedatabase.Listeners.OnCommandListener;
 import eu.ncodes.appwritedatabase.Listeners.OnPlayerJoin;
 import eu.ncodes.appwritedatabase.Listeners.OnPlayerLeave;
@@ -87,7 +87,7 @@ public final class AppwriteDatabase extends JavaPlugin {
                 if(p != null) {
                     String group = p.getUniqueId().toString();
 
-                    LinkedHashMap<String, CacheInstance> values = CacheManager.getInstance().getValues(group);
+                    LinkedHashMap<String, CacheValueInstance> values = CacheManager.getInstance().getValues(group);
 
                     String[] arr = new String[values.size() + 1];
                     values.keySet().toArray(arr);
@@ -103,7 +103,7 @@ public final class AppwriteDatabase extends JavaPlugin {
             PluginVariables.CommandManager.getCommandCompletions().registerCompletion("globalkey", c -> {
                 String group = AppwriteDatabaseAPI.GLOBAL_GROUP_NAME;
 
-                LinkedHashMap<String, CacheInstance> values = CacheManager.getInstance().getValues(group);
+                LinkedHashMap<String, CacheValueInstance> values = CacheManager.getInstance().getValues(group);
 
                 String[] arr = new String[values.size() + 1];
 

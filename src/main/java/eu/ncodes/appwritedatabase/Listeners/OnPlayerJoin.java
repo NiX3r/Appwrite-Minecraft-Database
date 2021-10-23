@@ -2,8 +2,10 @@ package eu.ncodes.appwritedatabase.Listeners;
 
 import com.google.gson.JsonObject;
 import eu.ncodes.appwritedatabase.Managers.CacheManager;
+import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Utils.PluginUtils;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 public class OnPlayerJoin implements Listener {
-    // TODO - nerob to po 10 ale po 100
 
     @EventHandler
     public void On(PlayerJoinEvent e)
@@ -33,17 +34,17 @@ public class OnPlayerJoin implements Listener {
         }
         */
 
-        PluginUtils.getAllDocuments(uuid, (response) -> {
+        DocumentService.getPlayer(uuid, (response) -> {
             if(response.error != null) {
-                // Could not load. Fine? Will be loaded later. Should not occur, only if 5XX error
+                Bukkit.getPlayer(uuid).kickPlayer("Could not load data. Please try again.");
                 return;
             }
 
-            LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) response.value;
+            JsonObject data = (JsonObject) response.value;
 
             for(String key : data.keySet()) {
-                HashMap<String, Object> value = (HashMap<String, Object>) data.get(key);
-                CacheManager.getInstance().setValue(uuid, key, value.get("value"), (JsonObject) value.get("document"));
+                Object value = data.get(key);
+                CacheManager.getInstance().setValue(uuid, key, value, true);
             }
         });
     }
