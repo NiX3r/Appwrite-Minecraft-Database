@@ -292,3 +292,6 @@ Types:
 
 Why do I need different types? 🤔 For example, if you have to store money, you have to store it as INT or FLOAT, because later you will need to increase or decrease the value by a relative amount.
 
+## Powered by [Appwrite](https://appwrite.io)!
+
+<img src="insert" alt="Appwrite logo">
