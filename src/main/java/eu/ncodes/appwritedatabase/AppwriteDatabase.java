@@ -13,14 +13,12 @@ import eu.ncodes.appwritedatabase.Services.DocumentService;
 import eu.ncodes.appwritedatabase.Services.GetCollectionListService;
 import eu.ncodes.appwritedatabase.Utils.PlaceholderAPI;
 import eu.ncodes.appwritedatabase.Utils.PluginVariables;
-import eu.ncodes.appwritedatabase.Utils.SecretUtils;
 import io.appwrite.Client;
 import io.appwrite.services.Database;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedHashMap;
@@ -149,7 +147,7 @@ public final class AppwriteDatabase extends JavaPlugin {
             }
 
             // Create instance of bStats
-            Metrics metrics = new Metrics(this, SecretUtils.GetMetricsID());
+            Metrics metrics = new Metrics(this, 13089);
 
         }
 

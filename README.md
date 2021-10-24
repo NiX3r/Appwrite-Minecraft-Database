@@ -158,7 +158,9 @@ There you can set up plugin utilities
 
 ## 🧲 API
 
-Firstable you have to import project via `maven`
+Firstable you have to import project from [JitPack](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database)
+
+
 
 ## 🔮 PlaceholdersAPI
 
