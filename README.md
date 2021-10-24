@@ -1,43 +1,66 @@
 [![](https://jitpack.io/v/nCodesDotEU/Appwrite-Minecraft-Database.svg)](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database)
 
-# 🎉 Appwrite Minecraft SKD
-Utility Minecraft plugin that creates persistent data storage while using Appwrite.
+# 🎉 Appwrite Minecraft SDK
 
-## 📜 Features
+Utility Minecraft plugin that creates persistent data storage while using Appwrite as a database. This plugin was a missing piece on the scene for years! Finally, with Appwrite Minecraft SDK, storing data is as simple as `/appwrite database NiX3r set money 50`. A server makes no longer needs to pay over-priced developers just because there is no simple way to store data without writing Java code.
 
-- insert
+## 📜 Showcase
+
+I am a server administrator, I have no coding experience, and I want to customize my server...
+
+I have a dungeon minigame already created, but I don't want to let players play it infinitely; instead, I want to make this minigame a special reward. First, I start by running a command to define the variable `availableDungeonKeys` when a player first joins my server and set it to 0:
+
+```
+/appwrite database player set-remote %playername% availableDungeonKeys 3
+```
+
+Great, now when a new player joins, he will automatically have 3 keys.
+
+When starting a minigame, I can use the placeholder `%aw_p_availableDungeonKeys%` to get the value and check if the amount is higher than 0. If that is the case, I can run a command to take 1 key from the player:
+
+```
+/appwrite database player take-remote %playername% availableDungeonKeys 1
+```
+
+Now that I have taken one key from the player, I can let him into a minigame. Tada 🎉 I have just created a system where players can join my minigame, but they can only do it 3 times.
+
+Finally, I add an option to purchase more keys to my web-store and run the command once they purchase the keys:
+
+```
+/appwrite database player add-remote %playername% availableDungeonKeys 10
+```
 
 ## 💿 How to install
 
-1. Download lastest plugin from [Spigot](insert)
-2. Copy it into the server plugins folder
-3. Start / Restart server for first load plugin
-4. Setup config settings
-5. Restart server
-6. **Enjoy Appwrite Database plugin**!
+1. Download the latest plugin from [Spigot](insert)
+2. Copy the jar file into the server plugins folder
+3. Start / Restart the server to trigger the first load  of the plugin
+4. Insert Appwrite endpoint, project ID and API key into the generated config.yml file
+5. Restart the server
+6. **Enjoy Appwrite Database plugin!**
 
 ## ⌨️ Commands
 
 Aliases: `appwrite` | `aw`
 
 - **Help**
-  - Command for show help menu in game
-  - Usage: `appwrite help`
+  - Command to show help menu in the game
+  - Usage: `/appwrite help`
 - **Version**
-  - Command for show current version
-  - Usage: `appwrite version`
+  - Command to show the currently installed version
+  - Usage: `/appwrite version`
   - Aliases: `version` | `ver` | `v`
   - Permisson: `appwrite.version`
 - **Database**
-  - Command for work with database
+  - Command for work with the data storage
   - Aliases: `database` | `db`
   - Sub commands:
     - **Player**
-      - Command for work with players database
-      - Aliases `player` | `db`
+      - Command to work with data of a specific player
+      - Aliases `player` | `p`
       - Sub commands:
         - **Save**
-          - Command for save cache into database
+          - Command for save cache into the database. This is triggered automatically when player leaves the server, but you can use this command to store it at a specific point.
           - Usage: `appwrite database player save <player>`
           - Aliases: `save` | `s`
           - Permission: `appwrite.player.save`
@@ -77,11 +100,11 @@ Aliases: `appwrite` | `aw`
           - Aliases: `get` | `g`
           - Permission: `appwrite.player.get`
     - **Global**
-      - Command for work with global database
+      - Command to work with global database. Here you can store variables that are shared for everyone one the server.
       - Aliases `global` | `g`
       - Sub commands:
         - **Save**
-          - Command for global save cache into database
+          - Command to save the global cache into database
           - Usage: `appwrite database global save`
           - Aliases: `save` | `s`
           - Permission: `appwrite.global.save`
@@ -116,7 +139,7 @@ Aliases: `appwrite` | `aw`
           - Aliases: `take-remote` | `tr`
           - Permission: `appwrite.global.take.remote`
         - **Get**
-          - Command to get a value of remote variable
+          - Command to get a value of global variable
           - Usage: `appwrite database global get <key>`
           - Aliases: `get` | `g`
           - Permission: `appwrite.global.get`
@@ -142,15 +165,15 @@ Aliases: `appwrite` | `aw`
 
 ## 📐 Configs
 
-### ⚙️ Config
+### ⚙️ config.yml
 
-There you can set up plugin utilities
+In the `config.yml` file, you can configure the connection to the Appwrite server.
 
-* **appwrite.api_endpoint:**  setup your appwrite endpoint
-* **appwrite.project_id:** setup your appwrite project ID
-* **appwrite.api_key**: setup your appwrite api key
+* **appwrite.api_endpoint:**  Your Appwrite endpoint
+* **appwrite.project_id:** Your Appwrite project ID
+* **appwrite.api_key**: Your Appwrite API key
 
-## 🈴 Languages
+### 🈴 languages.yml
 
 * 🇺🇸 [English](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/messages/english.yml)
 * 🇨🇿 [Česky](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/messages/cesky.yml)
@@ -158,9 +181,34 @@ There you can set up plugin utilities
 
 ## 🧲 API
 
-Firstable you have to import project from [JitPack](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database)
+Before using the API, make sure your plugin is set up a valid Maven project.
 
+First things first, you have to import the project from [JitPack](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database). To do that, you enter `pom.xml` of your project and add `repository` and `dependency`.
 
+```
+	...
+	<repository>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+	...
+	<dependency>
+	    <groupId>com.github.nCodesDotEU</groupId>
+	    <artifactId>Appwrite-Minecraft-Database</artifactId>
+	    <version>Tag</version>
+	</dependency>
+	...
+```
+
+Then, you can start using the API from class `AppwriteDatabaseAPI`, for example:
+
+```
+String playerName = "NiX3r";
+Player player = Bukkit.getPlayer(playerName);
+String playerUUID = player.getUniqueId().toString();
+
+AppwriteDatabaseAPI.addValueSync(playerUUID, "money", 12, true);
+```
 
 ## 🔮 PlaceholdersAPI
 
@@ -181,7 +229,7 @@ Firstable you have to import project from [JitPack](https://jitpack.io/#nCodesDo
 3. Defaults - default values of variables
 4. Inspects - inspect players keys, global keys and their values
 5. TOP 10 - shows top 10 
-6. Merch?
+6. Merge data with external changes
 
 ## 📆 Versions
 
@@ -195,11 +243,11 @@ Firstable you have to import project from [JitPack](https://jitpack.io/#nCodesDo
 
 ### 📣 Where to use local and where remote variables?
 
-Local variables are those that don't save in the database. And on the other way, remote variables are those that save in the database. So you can use local variables as much as you want and they'll be never shown in the database. Fun fact: You can create a local variable and then just set it as remote and vice versa.
+Local variables are those that don't save in the database. On the other hand, remote variables are those that are saved in the database. That means you can use local variables as much as you want, and they'll never be stored in the database. Fun fact: You can create a local variable and then just set it as remote and vice versa.
 
 ### 📣 Types of variables
 
-You can play with several variables types. If you once choose them you cannot change them (must delete and then create again).
+You can use several variables types. Once you choose the type, you cannot change it - you must delete and then create in again to override the type.
 
 Types:
 
@@ -207,5 +255,5 @@ Types:
 - **FLOAT** - number with a decimal point
 - **STRING** - everything else (typically text)
 
-For what is that good? For example, if you have to store money you have to store it as INT or FLOAT because of later adding/taking.
+Why do I need different types? 🤔 For example, if you have to store money, you have to store it as INT or FLOAT, because later you will need to increase or decrease the value by a relative amount.
 
