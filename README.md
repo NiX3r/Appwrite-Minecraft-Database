@@ -58,7 +58,7 @@ In this event, I also use placeholder `%aw_p_fragments%` to check if he has at l
 
 Wohoo, energy system finished 🥳 Here is a working example of such a logic:
 
-(GIF)
+<img src="https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/pictures/energy.gif">
 
 ## 💿 How to install
 
@@ -71,7 +71,9 @@ Wohoo, energy system finished 🥳 Here is a working example of such a logic:
 
 ## ⌨️ Commands
 
-Aliases: `appwrite` | `aw`
+Aliases: `appwrite` | `aw` <br>
+Example of commands usage: <br>
+<img src="https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/pictures/command.gif">
 
 - **Help**
   - Command to show help menu in the game
