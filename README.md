@@ -226,16 +226,19 @@ AppwriteDatabaseAPI.addValueSync(playerUUID, "money", 12, true);
 
 1. Don't remove local variables
 2. Aliasses - mathematical formulas to count
-3. Defaults - default values of variables
-4. Inspects - inspect players keys, global keys and their values
-5. TOP 10 - shows top 10 
-6. Merge data with external changes
+3. Events - create database events (such as OnDataChange, OnDataLoad, OnDataSave, ...)
+4. Defaults - default values of variables
+5. Inspects - inspect players keys, global keys and their values
+6. TOP 10 - shows top 10 
+7. Merge data with external changes
 
 ## 📆 Versions
 
-| Plugin version | Description             | 1.17 | 1.16 | 1.14 | 1.12 | 1.8  | 1.7  | 1.5  |
-| -------------- | ----------------------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| 0.0.1          | First release of plugin | ✔️    | ❌    | ❌    | ❌    | ❌    | ❌    | ❌    |
+| Plugin version                                               | Description             | 1.17 | 1.16 | 1.14 | 1.12 | 1.8  | 1.7  | 1.5  |
+| ------------------------------------------------------------ | ----------------------- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| 0.0.1                                                        | First release of plugin | ✔️    | ❌    | ❌    | ❌    | ❌    | ❌    | ❌    |
+| [0.0.2](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/releases/tag/v0.0.2) | Huge refactor           | ✔️    | ❌    | ❌    | ❌    | ❌    | ❌    | ❌    |
+| [0.0.3](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/releases/tag/v0.0.3) | Fixed JitPack build     | ✔️    | ❌    | ❌    | ❌    | ❌    | ❌    | ❌    |
 
 
 
