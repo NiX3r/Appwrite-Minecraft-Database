@@ -30,6 +30,36 @@ Finally, I add an option to purchase more keys to my web-store and run the comma
 /appwrite database player add-remote %playername% availableDungeonKeys 10
 ```
 
+---
+
+Let's take a look at another scenario... Let's say I need an energy system so the player can only join the minigame when he has at least 1 energy. Instead of buying it, he needs to collect 25 fragments in order to convert it to 1 energy. Fragments can be obtained by breaking a special block on the spawn. How do I achieve that?  It's extremely simple!
+
+Let's start.. First, define variables when a player joins for the first time:
+
+```
+/appwrite database player set-remote %playername% energy 5
+/appwrite database player set-local %playername% fragments 0
+```
+
+Notice how I marked fragments local because I want to lose the value when a player leaves the server - I don't want to store that.
+
+Now, when a player breaks the specific block, I can run a command to increase his fragments count:
+
+```
+/appwrite database player add-local %playername% fragments 1
+```
+
+In this event, I also use placeholder `%aw_p_fragments%` to check if he has at least 25, and if that is the case, I reset it to 0 while increasing the energy count:
+
+```
+/appwrite database player add-remote %playername% energy 1
+/appwrite database player set-local %playername% fragments 0
+```
+
+Wohoo, energy system finished 🥳 Here is a working example of such a logic:
+
+(GIF)
+
 ## 💿 How to install
 
 1. Download the latest plugin from [Spigot](insert)
