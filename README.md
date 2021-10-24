@@ -62,7 +62,7 @@ Wohoo, energy system finished 🥳 Here is a working example of such a logic:
 
 ## 💿 How to install
 
-1. Download the latest plugin from [Spigot](insert)
+1. Download the latest plugin from [Spigot](insert) (TODO)
 2. Copy the jar file into the server plugins folder
 3. Start / Restart the server to trigger the first load  of the plugin
 4. Insert Appwrite endpoint, project ID and API key into the generated config.yml file
@@ -209,7 +209,7 @@ In the `config.yml` file, you can configure the connection to the Appwrite serve
 
 * 🇺🇸 [English](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/messages/english.yml)
 * 🇨🇿 [Česky](https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/messages/cesky.yml)
-* 🇸🇰 [Slovensky](insert)
+* 🇸🇰 [Slovensky](insert) (TODO)
 
 ## 🧲 API
 
@@ -294,4 +294,4 @@ Why do I need different types? 🤔 For example, if you have to store money, you
 
 ## Powered by [Appwrite](https://appwrite.io)!
 
-<img src="insert" alt="Appwrite logo">
+<img src="insert" alt="Appwrite logo"> (TODO)
