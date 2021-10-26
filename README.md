@@ -1,6 +1,6 @@
 [![](https://jitpack.io/v/nCodesDotEU/Appwrite-Minecraft-Database.svg)](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database)
 
-# 🎉 Appwrite Minecraft SDK
+# 🎉 Appwrite Minecraft SDK <img src="https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/pictures/logo.png" alt="Logo" width="20%" height="20%">
 
 Utility Minecraft plugin that creates persistent data storage while using Appwrite as a database. This plugin was a missing piece on the scene for years! Finally, with Appwrite Minecraft SDK, storing data is as simple as `/appwrite database NiX3r set money 50`. A server makes no longer needs to pay over-priced developers just because there is no simple way to store data without writing Java code.
 
@@ -297,3 +297,5 @@ Why do I need different types? 🤔 For example, if you have to store money, you
 <a href="https://appwrite.io/" target="_blank" style="position: fixed;right: 18px;bottom: 18px;z-index: 999;">
   <img style="width: 130px;" src="https://appwrite.io/images-ee/press/badge-pink-box.svg" alt="Built with Appwrite">
 </a>
+
+**My big pleasure for plugin logo to** @NeonSpork
