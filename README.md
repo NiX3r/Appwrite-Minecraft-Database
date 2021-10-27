@@ -1,7 +1,7 @@
 [![](https://jitpack.io/v/nCodesDotEU/Appwrite-Minecraft-Database.svg)](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database)
 
 
-<img align="left" src="./pictures/block_logo.svg" style="width:25%;max-width:150px;height:auto;margin:15px;">
+<img align="left" src="./pictures/block_logo.svg" style="width:25%;max-width:120px;height:auto;margin:15px;">
 
 # Appwrite Minecraft SDK
 
