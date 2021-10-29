@@ -1,6 +1,9 @@
 [![](https://jitpack.io/v/nCodesDotEU/Appwrite-Minecraft-Database.svg)](https://jitpack.io/#nCodesDotEU/Appwrite-Minecraft-Database)
 
-# <img src="https://github.com/nCodesDotEU/Appwrite-Minecraft-Database/blob/master/pictures/logo.png" alt="Logo" width="6%" height="6%"> Appwrite Minecraft SDK
+
+<img align="left" src="./pictures/block_logo.svg" style="width:20%;max-width:140px;margin:15px;">
+
+# Appwrite Minecraft SDK
 
 Utility Minecraft plugin that creates persistent data storage while using Appwrite as a database. This plugin was a missing piece on the scene for years! Finally, with Appwrite Minecraft SDK, storing data is as simple as `/appwrite database NiX3r set money 50`. A server makes no longer needs to pay over-priced developers just because there is no simple way to store data without writing Java code.
 
