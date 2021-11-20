@@ -1,0 +1,49 @@
+prefix: '&d&lAppwrite &8• &7'
+commands:
+  help: '&7Pomocne menu'
+  version: '&aVerzia pluginu: {{version}}'
+  set:
+    player:
+      success: '&a█ &7Kluc &f{{key}} &7uspesne nasteveny na &f{{value}} &7pre hraca
+        &f{{player}}'
+      not_found: '&6█ &7Kolekcia nebola najdena. Prosim skuste to neskor.'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &7Kluc &f{{key}} &7uspesne nastaveny na &f{{value}} &7pre obecna data'
+      not_found: '&6█ &7Kolekcia nebola najdena. Prosim skuste to neskor'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+  add:
+    player:
+      success: '&a█ &7Kluc &f{{key}} &7uspesne aktualizovany &8(+) &7na &f{{value}}
+        &7pre hrace &f{{player}}'
+      not_found: '&6█ &7Kolekcia nebola najdena. Prosim skuste to neskor'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &7Kluc &f{{key}} &7uspesne aktualizovany &8(+) &7na &f{{value}}
+        &7pre vseobecne data'
+      not_found: '&6█ &7Kolekcia nebola najdena. Prosim skuste to neskor'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+  take:
+    player:
+      success: '&a█ &7Kluc &f{{key}} &7uspesne aktualizovany &8(-) &7na &f{{value}}
+        &7pre hraca &f{{player}}'
+      not_found: '&6█ &7Kolekcia nebola najdena. Prosim skuste to neskor'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &7Kluc &f{{key}} &7uspesne aktualizovany &8(-) &7na &f{{value}}
+        &7pre vseobecne data'
+      not_found: '&6█ &7Kolekcia nebola najdena. Prosim skuste to neskor'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+  get:
+    player:
+      success: '&a█ &f{{key}}&7: &f{{value}} &8({{player}})'
+      not_found: '&6█ &7Kluc &f{{key}} &7nebol najdeny. Prosim najprv nastavte nebo definujte predvolenu hodnotu'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+    global:
+      success: '&a█ &f{{key}}&7: &f{{value}} &8(global)'
+      not_found: '&6█ &7Kluc &f{{key}} &7nebol najdeny. Prosim najprv nastavte nebo definujte predvolenu hodnotu'
+      unexpected_error: '&c█ &7Neocakavana chyba. Prosim skontrolujte Appwrite zaznamy'
+  config:
+    all: '&a█ &7Uspesne nacitane &fvsetky &7subory'
+    messages: '&a█ &7Uspesne nacitany &7soubor &fsprav'
+    config: '&a█ &7Uspesne nacitany &fmain &7subor'
